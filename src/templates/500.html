@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Sunucu Hatası - PCR Optimizer{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 offset-lg-2 text-center">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <h1 class="display-1 text-danger mb-3">500</h1>
+                <h2 class="mb-4">Sunucu Hatası</h2>
+                <p class="lead">
+                    Üzgünüz, sunucuda beklenmeyen bir hata oluştu.
+                </p>
+                <p>
+                    <i class="fas fa-flask-vial fa-2x text-warning my-3"></i>
+                </p>
+                <p>
+                    Bazen PCR reaksiyonları gibi, sunucular da beklenmedik şekilde davranabilir. 
+                    Ekibimiz sorunu çözmek için çalışıyor.
+                </p>
+                <div class="mt-4">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">
+                        <i class="fas fa-home me-2"></i>Ana Sayfaya Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

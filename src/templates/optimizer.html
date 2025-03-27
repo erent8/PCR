@@ -1,0 +1,424 @@
+{% extends "base.html" %}
+
+{% block title %}PCR Optimize Edici{% endblock %}
+
+{% block extra_css %}
+<style>
+    .protocol-box {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    .temp-marker {
+        width: 60px;
+        text-align: center;
+        font-weight: bold;
+    }
+    .cycle-step {
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
+    .cycle-denaturation {
+        background-color: #ffecb3;
+    }
+    .cycle-annealing {
+        background-color: #c8e6c9;
+    }
+    .cycle-extension {
+        background-color: #bbdefb;
+    }
+    .initial-denaturation {
+        background-color: #ffccbc;
+    }
+    .final-extension {
+        background-color: #d1c4e9;
+    }
+    .hold {
+        background-color: #b2dfdb;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-5">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0"><i class="fas fa-sliders-h me-2"></i>PCR Optimize Edici</h2>
+            </div>
+            <div class="card-body">
+                
+                {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+                </div>
+                {% endif %}
+                
+                <form method="post" action="{{ url_for('optimizer_page') }}">
+                    <h4 class="mb-3"><i class="fas fa-vial me-2"></i>Primer Bilgileri</h4>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="forward_primer" class="form-label">Forward Primer</label>
+                                <textarea class="form-control" id="forward_primer" name="forward_primer" rows="2" placeholder="Örn: ATGCTAGCTAGCTAGCTAGT"></textarea>
+                                <div class="form-text">İsteğe bağlı</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="reverse_primer" class="form-label">Reverse Primer</label>
+                                <textarea class="form-control" id="reverse_primer" name="reverse_primer" rows="2" placeholder="Örn: TAGCTAGCTAGCTAGCATCG"></textarea>
+                                <div class="form-text">İsteğe bağlı</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h4 class="mb-3"><i class="fas fa-dna me-2"></i>Şablon Özellikleri</h4>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="template_length" class="form-label">Şablon Uzunluğu (bp)</label>
+                                <input type="number" class="form-control" id="template_length" name="template_length" placeholder="Örn: 500" required>
+                                <div class="form-text">Zorunlu</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="template_gc" class="form-label">GC İçeriği (%)</label>
+                                <input type="number" step="0.1" min="0" max="100" class="form-control" id="template_gc" name="template_gc" placeholder="Örn: 55.5">
+                                <div class="form-text">İsteğe bağlı</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h4 class="mb-3"><i class="fas fa-flask me-2"></i>Konsantrasyon Bilgileri</h4>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="template_concentration" class="form-label">Şablon Konsantrasyonu (ng/µl)</label>
+                                <input type="number" step="0.1" min="0" class="form-control" id="template_concentration" name="template_concentration" placeholder="Örn: 10">
+                                <div class="form-text">İsteğe bağlı</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="target_yield" class="form-label">Hedef Verim (ng/µl)</label>
+                                <input type="number" step="0.1" min="0" class="form-control" id="target_yield" name="target_yield" placeholder="Örn: 100">
+                                <div class="form-text">İsteğe bağlı</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h4 class="mb-3"><i class="fas fa-cog me-2"></i>Ek Seçenekler</h4>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" id="is_diagnostic" name="is_diagnostic">
+                            <label class="form-check-label" for="is_diagnostic">
+                                Tanısal PCR (daha az döngü sayısı)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-magic me-2"></i> Protokolü Optimize Et
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-7">
+        {% if protocol %}
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h2 class="mb-0"><i class="fas fa-file-alt me-2"></i>Optimize Edilmiş PCR Protokolü</h2>
+            </div>
+            <div class="card-body">
+                <!-- Protokol verilerini JSON olarak saklayan gizli alan -->
+                <input type="hidden" id="protocolData" data-protocol='{{ protocol|tojson }}'>
+                
+                <h4 class="mb-3"><i class="fas fa-temperature-high me-2"></i>Sıcaklık Profili</h4>
+                
+                <div class="protocol-box">
+                    <!-- Başlangıç Denatürasyonu -->
+                    <div class="d-flex align-items-center initial-denaturation mb-2 p-2 rounded">
+                        <div class="temp-marker">{{ protocol.initial_denaturation.temperature }}°C</div>
+                        <div class="progress flex-grow-1 mx-2" style="height: 30px;">
+                            <div class="progress-bar bg-danger" style="width: 100%" role="progressbar">
+                                Başlangıç Denatürasyonu ({{ protocol.initial_denaturation.time }} sn)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Döngüler (box'ın etrafını sarmak için) -->
+                    <div class="border rounded p-3 mb-2">
+                        <div class="mb-2 fw-bold">Döngüler ({{ protocol.cycles.count }}x):</div>
+                        
+                        <!-- Denatürasyon -->
+                        <div class="d-flex align-items-center cycle-denaturation mb-2 p-2 rounded">
+                            <div class="temp-marker">{{ protocol.cycles.denaturation.temperature }}°C</div>
+                            <div class="progress flex-grow-1 mx-2" style="height: 25px;">
+                                <div class="progress-bar bg-warning" style="width: 100%" role="progressbar">
+                                    Denatürasyon ({{ protocol.cycles.denaturation.time }} sn)
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bağlanma -->
+                        <div class="d-flex align-items-center cycle-annealing mb-2 p-2 rounded">
+                            <div class="temp-marker">{{ protocol.cycles.annealing.temperature }}°C</div>
+                            <div class="progress flex-grow-1 mx-2" style="height: 25px;">
+                                <div class="progress-bar bg-success" style="width: 100%" role="progressbar">
+                                    Bağlanma ({{ protocol.cycles.annealing.time }} sn)
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Uzama -->
+                        <div class="d-flex align-items-center cycle-extension mb-2 p-2 rounded">
+                            <div class="temp-marker">{{ protocol.cycles.extension.temperature }}°C</div>
+                            <div class="progress flex-grow-1 mx-2" style="height: 25px;">
+                                <div class="progress-bar bg-primary" style="width: 100%" role="progressbar">
+                                    Uzama ({{ protocol.cycles.extension.time }} sn)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Son Uzama -->
+                    <div class="d-flex align-items-center final-extension mb-2 p-2 rounded">
+                        <div class="temp-marker">{{ protocol.final_extension.temperature }}°C</div>
+                        <div class="progress flex-grow-1 mx-2" style="height: 30px;">
+                            <div class="progress-bar bg-purple" style="width: 100%; background-color: #9c27b0;" role="progressbar">
+                                Son Uzama ({{ protocol.final_extension.time }} sn)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Saklama -->
+                    <div class="d-flex align-items-center hold p-2 rounded">
+                        <div class="temp-marker">{{ protocol.hold.temperature }}°C</div>
+                        <div class="progress flex-grow-1 mx-2" style="height: 30px;">
+                            <div class="progress-bar bg-info" style="width: 100%" role="progressbar">
+                                Saklama
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h4 class="mb-3"><i class="fas fa-list-alt me-2"></i>Protokol Detayları</h4>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Sıcaklık Değerleri</h5>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Başlangıç Denatürasyonu:</span>
+                                    <span class="fw-bold">{{ protocol.initial_denaturation.temperature }}°C</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Denatürasyon:</span>
+                                    <span class="fw-bold">{{ protocol.cycles.denaturation.temperature }}°C</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Bağlanma:</span>
+                                    <span class="fw-bold">{{ protocol.cycles.annealing.temperature }}°C</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Uzama:</span>
+                                    <span class="fw-bold">{{ protocol.cycles.extension.temperature }}°C</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Son Uzama:</span>
+                                    <span class="fw-bold">{{ protocol.final_extension.temperature }}°C</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Saklama:</span>
+                                    <span class="fw-bold">{{ protocol.hold.temperature }}°C</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">Süre Değerleri</h5>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Başlangıç Denatürasyonu:</span>
+                                    <span class="fw-bold">{{ protocol.initial_denaturation.time }} sn</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Denatürasyon:</span>
+                                    <span class="fw-bold">{{ protocol.cycles.denaturation.time }} sn</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Bağlanma:</span>
+                                    <span class="fw-bold">{{ protocol.cycles.annealing.time }} sn</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Uzama:</span>
+                                    <span class="fw-bold">{{ protocol.cycles.extension.time }} sn</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Son Uzama:</span>
+                                    <span class="fw-bold">{{ protocol.final_extension.time }} sn</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Döngü Sayısı:</span>
+                                    <span class="fw-bold">{{ protocol.cycles.count }}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0">Tam Protokol Raporu</h5>
+                            </div>
+                            <div class="card-body">
+                                <pre class="bg-light p-3 rounded" style="white-space: pre-wrap;">{{ report }}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-center mb-2">
+                            <button type="button" class="btn btn-success me-2" id="downloadText">
+                                <i class="fas fa-file-alt me-1"></i> Metin Olarak İndir
+                            </button>
+                            <button type="button" class="btn btn-primary me-2" id="downloadJSON">
+                                <i class="fas fa-file-code me-1"></i> JSON Olarak İndir
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="downloadCSV">
+                                <i class="fas fa-file-csv me-1"></i> CSV Olarak İndir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0"><i class="fas fa-info-circle me-2"></i>PCR Optimizasyonu Hakkında</h2>
+            </div>
+            <div class="card-body">
+                <h4>PCR Optimizasyonu Neden Önemli?</h4>
+                <p>
+                    Polimeraz Zincir Reaksiyonu (PCR), moleküler biyolojide DNA dizilerini çoğaltmak için kullanılan temel bir tekniktir. 
+                    Başarılı bir PCR reaksiyonu için doğru sıcaklık, süre ve döngü sayısı gibi parametrelerin optimize edilmesi gerekir.
+                </p>
+                
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    <strong>İpucu:</strong> Optimize edilmiş bir PCR protokolü, spesifik olmayan ürünleri azaltır, verimi artırır ve tekrarlanabilir sonuçlar sağlar.
+                </div>
+                
+                <h4 class="mt-4">PCR Optimizasyonunda Anahtar Faktörler</h4>
+                <ul>
+                    <li><strong>Primer Dizaynı:</strong> Primerlerin GC içeriği ve Tm değerleri reaksiyonun başarısını etkiler.</li>
+                    <li><strong>Bağlanma Sıcaklığı:</strong> Çok düşük olursa spesifik olmayan bağlanmalar, çok yüksek olursa yetersiz bağlanma görülür.</li>
+                    <li><strong>Döngü Sayısı:</strong> Çok fazla döngü yan ürünleri artırabilir, çok az döngü yetersiz verime neden olabilir.</li>
+                    <li><strong>Uzama Süresi:</strong> Şablon uzunluğuna ve kullanılan polimerazın özelliklerine bağlıdır.</li>
+                </ul>
+                
+                <h4 class="mt-4">Optimize Ediciyi Nasıl Kullanabilirsiniz?</h4>
+                <p>
+                    Soldaki formu kullanarak şablon uzunluğu, primer dizileri, GC içeriği ve konsantrasyon gibi 
+                    bilgileri girerek optimal PCR protokolünüzü oluşturabilirsiniz. Sistem tüm parametreleri 
+                    hesaplayarak size özelleştirilmiş bir protokol sunacaktır.
+                </p>
+                
+                <div class="text-center mt-4">
+                    <img src="https://via.placeholder.com/600x250?text=PCR+Optimization+Guide" class="img-fluid rounded" alt="PCR Optimizasyon Kılavuzu">
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if protocol %}
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('downloadText').addEventListener('click', function() {
+            downloadProtocol('text');
+        });
+        
+        document.getElementById('downloadJSON').addEventListener('click', function() {
+            downloadProtocol('json');
+        });
+        
+        document.getElementById('downloadCSV').addEventListener('click', function() {
+            downloadProtocol('csv');
+        });
+    });
+    
+    function downloadProtocol(format) {
+        const protocolElement = document.getElementById('protocolData');
+        
+        if (!protocolElement) {
+            console.error('Protocol data not found');
+            return;
+        }
+        
+        const protocol = JSON.parse(protocolElement.dataset.protocol);
+        
+        fetch("{{ url_for('download_protocol') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                protocol: protocol,
+                format: format
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.blob();
+            }
+            throw new Error('Protokol indirme işlemi başarısız oldu.');
+        })
+        .then(blob => {
+            // İndirme işlemi için bir link oluşturup tıklama
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const extension = format === 'json' ? 'json' : (format === 'csv' ? 'csv' : 'txt');
+            a.href = url;
+            a.download = `pcr_protokolu.${extension}`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        })
+        .catch(error => {
+            console.error('Hata:', error);
+            alert('Protokol indirme sırasında bir hata oluştu: ' + error.message);
+        });
+    }
+</script>
+{% endblock %}
+{% endif %}
+
+{% endblock %} 

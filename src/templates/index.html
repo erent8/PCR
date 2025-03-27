@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}PCR Optimizer - Ana Sayfa{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 offset-lg-2 text-center">
+        <h1 class="display-4 mb-4">
+            <i class="fas fa-dna text-primary me-3"></i>PCR Optimizer
+        </h1>
+        <p class="lead mb-4">
+            PCR deneylerini planlamak ve optimize etmek için geliştirilmiş, kullanımı kolay bir araç. 
+            Primer tasarımı, sıcaklık hesaplamaları ve protokol optimizasyonu için tek durağınız.
+        </p>
+        <hr class="my-4">
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-calculator text-primary fa-4x mb-3"></i>
+                <h3 class="card-title">PCR Hesaplayıcı</h3>
+                <p class="card-text">
+                    Primer Tm değerlerini, GC içeriğini hesaplayın ve 
+                    optimum bağlanma sıcaklıklarını belirleyin.
+                </p>
+                <a href="{{ url_for('calculator_page') }}" class="btn btn-primary mt-2">
+                    <i class="fas fa-arrow-right me-1"></i> Hesaplayıcıya Git
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-sliders-h text-primary fa-4x mb-3"></i>
+                <h3 class="card-title">PCR Optimize Edici</h3>
+                <p class="card-text">
+                    Şablona ve primerlere göre PCR koşullarını optimize edin 
+                    ve özelleştirilmiş protokoller oluşturun.
+                </p>
+                <a href="{{ url_for('optimizer_page') }}" class="btn btn-primary mt-2">
+                    <i class="fas fa-arrow-right me-1"></i> Optimize Ediciye Git
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-book text-primary fa-4x mb-3"></i>
+                <h3 class="card-title">PCR Kılavuzu</h3>
+                <p class="card-text">
+                    PCR'nin temel prensipleri, sorun giderme ipuçları
+                    ve en iyi uygulamalar hakkında bilgi edinin.
+                </p>
+                <a href="{{ url_for('about') }}" class="btn btn-primary mt-2">
+                    <i class="fas fa-arrow-right me-1"></i> Daha Fazla Bilgi
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0"><i class="fas fa-lightbulb me-2"></i>PCR Optimizer Nasıl Çalışır?</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">1</div>
+                            </div>
+                            <div>
+                                <h5>Primer Bilgilerini Girin</h5>
+                                <p>Forward ve reverse primer dizilerini, şablon uzunluğunu ve diğer bilgileri girin.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">2</div>
+                            </div>
+                            <div>
+                                <h5>Tm ve GC İçeriği Hesaplanır</h5>
+                                <p>Sistem otomatik olarak erime sıcaklıklarını ve GC içeriğini hesaplar.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">3</div>
+                            </div>
+                            <div>
+                                <h5>PCR Koşulları Optimize Edilir</h5>
+                                <p>Bağlanma sıcaklıkları, uzama süreleri ve döngü sayıları optimize edilir.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">4</div>
+                            </div>
+                            <div>
+                                <h5>Özelleştirilmiş Protokol Oluşturulur</h5>
+                                <p>Optimize edilmiş sıcaklık, süre ve döngü sayılarını içeren protokol oluşturulur.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('optimizer_page') }}" class="btn btn-lg btn-primary">
+                        <i class="fas fa-magic me-2"></i>PCR'ınızı Optimize Edin
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

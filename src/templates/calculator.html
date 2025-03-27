@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}PCR Hesaplayıcı{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0"><i class="fas fa-calculator me-2"></i>PCR Hesaplayıcı</h2>
+            </div>
+            <div class="card-body">
+                
+                {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+                </div>
+                {% endif %}
+                
+                <form method="post" action="{{ url_for('calculator_page') }}">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="forward_primer" class="form-label fw-bold">Forward Primer Dizisi</label>
+                                <textarea class="form-control" id="forward_primer" name="forward_primer" rows="3" placeholder="Örn: ATGCTAGCTAGCTAGCTAGT"></textarea>
+                                <div class="form-text">5' → 3' yönünde primer dizisini girin</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="reverse_primer" class="form-label fw-bold">Reverse Primer Dizisi</label>
+                                <textarea class="form-control" id="reverse_primer" name="reverse_primer" rows="3" placeholder="Örn: TAGCTAGCTAGCTAGCATCG"></textarea>
+                                <div class="form-text">5' → 3' yönünde primer dizisini girin</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="template_length" class="form-label fw-bold">Şablon Uzunluğu (baz çifti)</label>
+                                <input type="number" class="form-control" id="template_length" name="template_length" placeholder="Örn: 500">
+                                <div class="form-text">Uzama süresini hesaplamak için</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="sequence" class="form-label fw-bold">DNA Dizisi (isteğe bağlı)</label>
+                                <textarea class="form-control" id="sequence" name="sequence" rows="3" placeholder="Örn: ATGCTAGCTAGCTAGCTAGT..."></textarea>
+                                <div class="form-text">GC içeriğini hesaplamak için</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-calculator me-2"></i> Hesapla
+                        </button>
+                    </div>
+                </form>
+                
+                {% if results %}
+                <hr class="my-4">
+                <h3 class="mb-4"><i class="fas fa-chart-line me-2"></i>Hesaplama Sonuçları</h3>
+                
+                <div class="row">
+                    {% if results.forward_tm or results.forward_gc %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 border-primary">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Forward Primer Sonuçları</h5>
+                            </div>
+                            <div class="card-body">
+                                {% if results.forward_tm %}
+                                <div class="d-flex justify-content-between">
+                                    <span>Erime Sıcaklığı (Tm):</span>
+                                    <span class="badge bg-primary fs-6">{{ results.forward_tm|round(1) }}°C</span>
+                                </div>
+                                <hr>
+                                {% endif %}
+                                
+                                {% if results.forward_gc %}
+                                <div class="d-flex justify-content-between">
+                                    <span>GC İçeriği:</span>
+                                    <span class="badge bg-primary fs-6">%{{ results.forward_gc|round(1) }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if results.reverse_tm or results.reverse_gc %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 border-primary">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Reverse Primer Sonuçları</h5>
+                            </div>
+                            <div class="card-body">
+                                {% if results.reverse_tm %}
+                                <div class="d-flex justify-content-between">
+                                    <span>Erime Sıcaklığı (Tm):</span>
+                                    <span class="badge bg-primary fs-6">{{ results.reverse_tm|round(1) }}°C</span>
+                                </div>
+                                <hr>
+                                {% endif %}
+                                
+                                {% if results.reverse_gc %}
+                                <div class="d-flex justify-content-between">
+                                    <span>GC İçeriği:</span>
+                                    <span class="badge bg-primary fs-6">%{{ results.reverse_gc|round(1) }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="row">
+                    {% if results.annealing_temp %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 border-success">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">Bağlanma Sıcaklığı</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <span>Önerilen Bağlanma Sıcaklığı:</span>
+                                    <span class="badge bg-success fs-6">{{ results.annealing_temp|round(1) }}°C</span>
+                                </div>
+                                <div class="form-text mt-2">
+                                    <i class="fas fa-info-circle me-1"></i> Bağlanma sıcaklığı, primer Tm değerlerinin ortalamasının 5°C altı olarak hesaplanır.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if results.extension_time %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 border-success">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">Uzama Süresi</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <span>Önerilen Uzama Süresi:</span>
+                                    <span class="badge bg-success fs-6">{{ results.extension_time }} saniye</span>
+                                </div>
+                                <div class="form-text mt-2">
+                                    <i class="fas fa-info-circle me-1"></i> Uzama süresi şablon uzunluğuna ve polimeraz hızına göre hesaplanır.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                {% if results.sequence_gc %}
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 border-info">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0">Dizi Analizi</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <span>Dizi GC İçeriği:</span>
+                                    <span class="badge bg-info fs-6">%{{ results.sequence_gc|round(1) }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="d-grid gap-2 col-6 mx-auto mt-4">
+                    <a href="{{ url_for('optimizer_page') }}" class="btn btn-primary">
+                        <i class="fas fa-sliders-h me-2"></i> PCR Protokolünü Optimize Et
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
