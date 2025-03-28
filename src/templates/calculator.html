@@ -1,0 +1,367 @@
+{% extends "base.html" %}
+
+{% block title %}PCR Hesaplayıcı{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Yumuşak tasarım için özel stiller */
+    .calculator-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem 0;
+    }
+
+    .calculator-header {
+        text-align: center;
+        padding-bottom: 1.5rem;
+        border-bottom: none;
+        margin-bottom: 2rem;
+    }
+    
+    .calculator-title {
+        font-weight: 500;
+        color: #3498db;
+        margin-bottom: 1rem;
+    }
+    
+    .calculator-card {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .calculator-form {
+        padding: 2rem;
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .form-control {
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.2);
+    }
+    
+    .form-label {
+        font-weight: 500;
+        color: #444;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-text {
+        color: #6c757d;
+        font-size: 0.875rem;
+    }
+    
+    .results-card {
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+    
+    .results-header {
+        background-color: #3498db;
+        color: white;
+        padding: 1rem 1.5rem;
+        font-weight: 500;
+    }
+    
+    .results-body {
+        padding: 1.5rem;
+    }
+    
+    .results-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    .results-section-title {
+        font-weight: 500;
+        color: #3498db;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .result-row {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .result-row:last-child {
+        border-bottom: none;
+    }
+    
+    .result-label {
+        font-weight: 500;
+        color: #444;
+    }
+    
+    .result-hint {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 0.5rem;
+        margin-top: 0.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .btn-calculate {
+        background-color: #3498db;
+        border-color: #3498db;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-calculate:hover, .btn-calculate:focus {
+        background-color: #2980b9;
+        border-color: #2980b9;
+        box-shadow: 0 5px 15px rgba(41, 128, 185, 0.3);
+    }
+    
+    .input-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Kart geçiş efektini kaldır */
+    .card {
+        transition: none !important;
+        margin-bottom: 20px;
+    }
+    .card:hover {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* Sonuçlar için ek stiller */
+    .card-body {
+        padding: 1.5rem;
+    }
+    .border-bottom {
+        border-bottom: 2px solid #e0e0e0 !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="calculator-container">
+    <div class="calculator-header">
+        <h1 class="calculator-title display-5">PCR Hesaplayıcı</h1>
+        <p class="lead text-muted">PCR parametrelerini doğru ve hassas bir şekilde hesaplayın</p>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="calculator-form">
+                {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+                
+                <form method="POST" action="{{ url_for('calculator_page') }}">
+                    <div class="input-section">
+                        <label for="forward_primer" class="form-label">Forward Primer</label>
+                        <input type="text" class="form-control" id="forward_primer" name="forward_primer" placeholder="ATGCTAGCATCGATCGTAGCTAGC">
+                        <div class="form-text">Primer dizisini 5' - 3' yönünde giriniz</div>
+                    </div>
+                    
+                    <div class="input-section">
+                        <label for="reverse_primer" class="form-label">Reverse Primer</label>
+                        <input type="text" class="form-control" id="reverse_primer" name="reverse_primer" placeholder="GCTAGCTAGCTAGCATCGATCGTA">
+                        <div class="form-text">Primer dizisini 5' - 3' yönünde giriniz</div>
+                    </div>
+                    
+                    <div class="input-section">
+                        <label for="template_length" class="form-label">Şablon Uzunluğu (baz çifti)</label>
+                        <input type="number" class="form-control" id="template_length" name="template_length" min="0" placeholder="500">
+                    </div>
+                    
+                    <div class="input-section">
+                        <label for="sequence" class="form-label">DNA Dizisi (isteğe bağlı)</label>
+                        <textarea class="form-control" id="sequence" name="sequence" rows="3" placeholder="ATGCATGCATGCATGCATGCATGC"></textarea>
+                        <div class="form-text">GC içeriği hesaplaması için DNA dizisini girebilirsiniz</div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-calculate">
+                            <i class="fas fa-calculator me-2"></i>Hesapla
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    {% if results %}
+    <div class="row mt-4">
+        <div class="col-md-8 mx-auto">
+            <div class="results-card">
+                <div class="results-header">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Hesaplama Sonuçları</h5>
+                </div>
+                <div class="results-body">
+                    <!-- Girilen veriler -->
+                    <div class="results-section">
+                        <h6 class="results-section-title">Girilen Veriler</h6>
+                        {% if request.form.forward_primer %}
+                        <div class="result-row">
+                            <div class="row">
+                                <div class="col-md-4 result-label">Forward Primer:</div>
+                                <div class="col-md-8">{{ request.form.forward_primer }}</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if request.form.reverse_primer %}
+                        <div class="result-row">
+                            <div class="row">
+                                <div class="col-md-4 result-label">Reverse Primer:</div>
+                                <div class="col-md-8">{{ request.form.reverse_primer }}</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if request.form.template_length %}
+                        <div class="result-row">
+                            <div class="row">
+                                <div class="col-md-4 result-label">Şablon Uzunluğu:</div>
+                                <div class="col-md-8">{{ request.form.template_length }} baz çifti</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if request.form.sequence %}
+                        <div class="result-row">
+                            <div class="row">
+                                <div class="col-md-4 result-label">DNA Dizisi:</div>
+                                <div class="col-md-8">{{ request.form.sequence }}</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Hesaplama sonuçları -->
+                    <div class="results-section">
+                        <h6 class="results-section-title">Hesaplanan Değerler</h6>
+                        
+                        {% if results.forward_tm %}
+                        <div class="result-row">
+                            <div class="row">
+                                <div class="col-md-4 result-label">Forward Primer Tm:</div>
+                                <div class="col-md-8">
+                                    <div class="fw-bold text-primary">{{ "%.1f"|format(results.forward_tm) }}°C</div>
+                                    <div class="result-hint mt-1">
+                                        <i class="fas fa-info-circle me-1 text-primary"></i> 
+                                        Tm değeri, primerin %50'sinin hedef DNA'ya bağlandığı sıcaklıktır. Bu değer primerin uzunluğuna ve GC içeriğine bağlıdır.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if results.forward_gc %}
+                        <div class="result-row">
+                            <div class="row">
+                                <div class="col-md-4 result-label">Forward Primer GC İçeriği:</div>
+                                <div class="col-md-8">
+                                    <div class="fw-bold text-primary">{{ "%.1f"|format(results.forward_gc) }}%</div>
+                                    <div class="result-hint mt-1">
+                                        <i class="fas fa-info-circle me-1 text-primary"></i> 
+                                        GC içeriği, primerdeki G ve C bazlarının yüzdesidir. Yüksek GC içeriği daha stabil bağlanma sağlar.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if results.reverse_tm %}
+                        <div class="result-row">
+                            <div class="row">
+                                <div class="col-md-4 result-label">Reverse Primer Tm:</div>
+                                <div class="col-md-8">
+                                    <div class="fw-bold text-primary">{{ "%.1f"|format(results.reverse_tm) }}°C</div>
+                                    <div class="result-hint mt-1">
+                                        <i class="fas fa-info-circle me-1 text-primary"></i> 
+                                        Tm değeri, primerin %50'sinin hedef DNA'ya bağlandığı sıcaklıktır. İdeal olarak, forward ve reverse primerler benzer Tm değerlerine sahip olmalıdır.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if results.reverse_gc %}
+                        <div class="result-row">
+                            <div class="row">
+                                <div class="col-md-4 result-label">Reverse Primer GC İçeriği:</div>
+                                <div class="col-md-8">
+                                    <div class="fw-bold text-primary">{{ "%.1f"|format(results.reverse_gc) }}%</div>
+                                    <div class="result-hint mt-1">
+                                        <i class="fas fa-info-circle me-1 text-primary"></i> 
+                                        GC içeriği, primerdeki G ve C bazlarının yüzdesidir. İdeal primerlerde GC içeriği %40-60 arasında olmalıdır.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if results.annealing_temp %}
+                        <div class="result-row">
+                            <div class="row">
+                                <div class="col-md-4 result-label">Tavsiye Edilen Bağlanma Sıcaklığı:</div>
+                                <div class="col-md-8">
+                                    <div class="fw-bold text-primary">{{ "%.1f"|format(results.annealing_temp) }}°C</div>
+                                    <div class="result-hint mt-1">
+                                        <i class="fas fa-info-circle me-1 text-primary"></i> 
+                                        Bağlanma sıcaklığı, primerlerin Tm değerlerinden 5°C düşük olacak şekilde hesaplanmıştır. Bu sıcaklık, primerlerin hedef DNA'ya özgül olarak bağlanmasını sağlar.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if results.sequence_gc %}
+                        <div class="result-row">
+                            <div class="row">
+                                <div class="col-md-4 result-label">DNA Dizisi GC İçeriği:</div>
+                                <div class="col-md-8">
+                                    <div class="fw-bold text-primary">{{ "%.1f"|format(results.sequence_gc) }}%</div>
+                                    <div class="result-hint mt-1">
+                                        <i class="fas fa-info-circle me-1 text-primary"></i> 
+                                        Yüksek GC içeriği (>60%) PCR'ı zorlaştırabilir ve özel tamponlar/koşullar gerektirebilir. Düşük GC içeriği (<40%) ise primerlerin bağlanma stabilitesini azaltabilir.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if results.extension_time %}
+                        <div class="result-row">
+                            <div class="row">
+                                <div class="col-md-4 result-label">Tavsiye Edilen Uzama Süresi:</div>
+                                <div class="col-md-8">
+                                    <div class="fw-bold text-primary">{{ results.extension_time }} saniye</div>
+                                    <div class="result-hint mt-1">
+                                        <i class="fas fa-info-circle me-1 text-primary"></i> 
+                                        Uzama süresi, şablon uzunluğuna göre hesaplanmıştır. DNA polimeraz genellikle saniyede 30-100 baz ekler ve güvenlik payı olarak ek süre eklenmiştir.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

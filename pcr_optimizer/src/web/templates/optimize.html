@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}PCR Optimizer - Optimize Et{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <h1 class="text-center">PCR Optimizasyonu</h1>
+        <p class="lead text-center">PCR deneyiniz için en uygun koşulları hesaplamak için aşağıdaki formu doldurun.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <i class="fas fa-edit"></i> PCR Parametreleri
+            </div>
+            <div class="card-body">
+                <form method="post" action="{{ url_for('optimize') }}">
+                    <!-- Gerekli Parametreler -->
+                    <h4>Gerekli Parametreler</h4>
+                    <p class="text-muted">DNA dizisi veya şablon uzunluğundan birini girmelisiniz.</p>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="dna_sequence">DNA Dizisi (FASTA formatı)</label>
+                                <textarea class="form-control" id="dna_sequence" name="dna_sequence" rows="6" placeholder="Örnek: ATGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTA..."></textarea>
+                                <small class="form-text text-muted">Sadece A, T, G, C, N karakterleri kabul edilir.</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="template_length">VEYA Şablon Uzunluğu (baz çifti)</label>
+                                <input type="number" class="form-control" id="template_length" name="template_length" placeholder="Örnek: 500" min="50" max="50000">
+                                <small class="form-text text-muted">DNA dizisi girilirse bu alan göz ardı edilir.</small>
+                            </div>
+                            
+                            <div class="form-group mt-3">
+                                <label for="pcr_type">PCR Tipi</label>
+                                <select class="form-select" id="pcr_type" name="pcr_type">
+                                    <option value="standard">Standart PCR</option>
+                                    <option value="diagnostic">Tanısal PCR</option>
+                                </select>
+                                <small class="form-text text-muted">Tanısal PCR genellikle daha fazla döngü sayısı kullanır.</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <!-- Opsiyonel Parametreler -->
+                    <h4>Opsiyonel Parametreler</h4>
+                    <p class="text-muted">Daha doğru sonuçlar için aşağıdaki parametreleri de girebilirsiniz.</p>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="forward_primer">İleri Primer</label>
+                                <input type="text" class="form-control" id="forward_primer" name="forward_primer" placeholder="Örnek: ATGCTAGCTAGCTAGCT">
+                                <small class="form-text text-muted">Primer dizisi 15-40 baz arasında olmalıdır.</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="reverse_primer">Geri Primer</label>
+                                <input type="text" class="form-control" id="reverse_primer" name="reverse_primer" placeholder="Örnek: TAGCTAGCTAGCTAGCA">
+                                <small class="form-text text-muted">Primer dizisi 15-40 baz arasında olmalıdır.</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="template_concentration">Şablon DNA Konsantrasyonu (ng/μL)</label>
+                                <input type="number" step="0.01" class="form-control" id="template_concentration" name="template_concentration" placeholder="Örnek: 10">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="target_yield">Hedef PCR Ürün Miktarı (ng/μL)</label>
+                                <input type="number" step="0.01" class="form-control" id="target_yield" name="target_yield" placeholder="Örnek: 100">
+                                <small class="form-text text-muted">Döngü sayısı hesaplamada kullanılır.</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-lg btn-optimize">
+                            <i class="fas fa-flask"></i> Optimize Et
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <i class="fas fa-info-circle"></i> Yardım
+            </div>
+            <div class="card-body">
+                <h5>PCR Optimizasyonu Nasıl Çalışır?</h5>
+                <p>PCR Optimizatör, girdiğiniz DNA dizisi veya uzunluğu temel alarak aşağıdaki hesaplamaları yapar:</p>
+                
+                <ul>
+                    <li><strong>Sıcaklık Optimizasyonu:</strong> Primer dizilerinin erime sıcaklığı (Tm) hesaplanır ve buna göre bağlanma sıcaklığı belirlenir.</li>
+                    <li><strong>Süre Optimizasyonu:</strong> DNA uzunluğuna göre, PCR'ın her aşaması için gereken süre hesaplanır.</li>
+                    <li><strong>Döngü Sayısı:</strong> Şablon konsantrasyonu ve hedef verime göre optimal döngü sayısı belirlenir.</li>
+                </ul>
+                
+                <h5>Parametreler Hakkında</h5>
+                <ul>
+                    <li><strong>DNA Dizisi veya Uzunluğu:</strong> Amplifikasyon yapılacak hedef DNA dizisi veya uzunluğu.</li>
+                    <li><strong>Primer Dizileri:</strong> Hedef bölgeyi çoğaltmak için kullanılan ileri ve geri primerler.</li>
+                    <li><strong>Şablon Konsantrasyonu:</strong> PCR reaksiyonundaki başlangıç DNA konsantrasyonu.</li>
+                    <li><strong>Hedef PCR Ürün Miktarı:</strong> Reaksiyon sonunda elde edilmek istenen ürün miktarı.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // DNA dizisi veya şablon uzunluğu alanlarından birini doldurduğunda diğerini devre dışı bırak
+    document.getElementById('dna_sequence').addEventListener('input', function() {
+        var templateLengthInput = document.getElementById('template_length');
+        if (this.value.trim() !== '') {
+            templateLengthInput.disabled = true;
+        } else {
+            templateLengthInput.disabled = false;
+        }
+    });
+    
+    document.getElementById('template_length').addEventListener('input', function() {
+        var dnaSequenceInput = document.getElementById('dna_sequence');
+        if (this.value.trim() !== '') {
+            dnaSequenceInput.disabled = true;
+        } else {
+            dnaSequenceInput.disabled = false;
+        }
+    });
+</script>
+{% endblock %} 

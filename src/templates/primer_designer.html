@@ -1,0 +1,627 @@
+{% extends "base.html" %}
+
+{% block title %}Primer Tasarım Aracı{% endblock %}
+
+{% block extra_css %}
+<style>
+    .primer-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 0;
+    }
+    
+    .primer-header {
+        text-align: center;
+        padding-bottom: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .primer-title {
+        font-weight: 500;
+        color: #3498db;
+        margin-bottom: 1rem;
+    }
+    
+    .primer-section {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .section-title {
+        color: #3498db;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .section-subtitle {
+        color: #2c3e50;
+        margin: 1.5rem 0 1rem;
+    }
+    
+    .form-label {
+        font-weight: 500;
+        color: #2c3e50;
+    }
+    
+    .form-text {
+        color: #7f8c8d;
+    }
+    
+    .primer-table {
+        margin-top: 1.5rem;
+    }
+    
+    .primer-result {
+        display: none;
+        margin-top: 2rem;
+    }
+    
+    .alert-success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+    }
+    
+    .alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+    
+    .alert-warning {
+        background-color: #fff3cd;
+        border-color: #ffeeba;
+    }
+    
+    .score-badge {
+        font-size: 1.25rem;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 30px;
+    }
+    
+    .high-score {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .medium-score {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    
+    .low-score {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    
+    .result-property {
+        margin-bottom: 0.75rem;
+        padding: 0.5rem;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+    
+    .result-property:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .property-name {
+        font-weight: 500;
+        color: #2c3e50;
+    }
+    
+    .property-value.ideal {
+        color: #28a745;
+    }
+    
+    .property-value.warning {
+        color: #ffc107;
+    }
+    
+    .property-value.error {
+        color: #dc3545;
+    }
+    
+    .primer-tips {
+        margin-top: 2rem;
+    }
+    
+    .tip-item {
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="primer-container">
+    <div class="primer-header">
+        <h1 class="primer-title display-5">Primer Tasarım Aracı</h1>
+        <p class="lead text-muted">PCR reaksiyonları için özel primer tasarımı ve analizi</p>
+    </div>
+    
+    <!-- Tasarım / Analiz Seçimi -->
+    <div class="primer-section">
+        <ul class="nav nav-tabs" id="primerTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="analyze-tab" data-bs-toggle="tab" data-bs-target="#analyze" type="button" role="tab" aria-controls="analyze" aria-selected="true">
+                    <i class="fas fa-microscope me-2"></i>Primer Analizi
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="design-tab" data-bs-toggle="tab" data-bs-target="#design" type="button" role="tab" aria-controls="design" aria-selected="false">
+                    <i class="fas fa-drafting-compass me-2"></i>Primer Tasarımı
+                </button>
+            </li>
+        </ul>
+        
+        <div class="tab-content" id="primerTabContent">
+            <!-- Primer Analiz Bölümü -->
+            <div class="tab-pane fade show active" id="analyze" role="tabpanel" aria-labelledby="analyze-tab">
+                <div class="primer-form mt-4">
+                    <form id="analyzeForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="forwardPrimer" class="form-label">İleri (Forward) Primer</label>
+                                    <input type="text" class="form-control" id="forwardPrimer" name="forwardPrimer" placeholder="örn: ATGCTAGCTGACTGATGCTA">
+                                    <div class="form-text">Primer dizisini 5' -> 3' yönünde girin</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="reversePrimer" class="form-label">Geri (Reverse) Primer</label>
+                                    <input type="text" class="form-control" id="reversePrimer" name="reversePrimer" placeholder="örn: TAGCTACGTACGATCGATCG">
+                                    <div class="form-text">Primer dizisini 5' -> 3' yönünde girin</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="button" class="btn btn-outline-secondary me-md-2" id="clearAnalyzeBtn">
+                                <i class="fas fa-eraser me-2"></i>Temizle
+                            </button>
+                            <button type="button" class="btn btn-primary" id="analyzeBtn">
+                                <i class="fas fa-flask me-2"></i>Primerleri Analiz Et
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Analiz Sonuçları -->
+                <div class="primer-result" id="analyzeResult">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>Analiz sonuçları burada görüntülenecek
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Primer Tasarım Bölümü -->
+            <div class="tab-pane fade" id="design" role="tabpanel" aria-labelledby="design-tab">
+                <div class="primer-form mt-4">
+                    <form id="designForm">
+                        <div class="mb-3">
+                            <label for="templateSequence" class="form-label">Hedef DNA Dizisi</label>
+                            <textarea class="form-control" id="templateSequence" name="templateSequence" rows="6" placeholder="Primer tasarlamak istediğiniz DNA dizisini girin"></textarea>
+                            <div class="form-text">DNA dizisini 5' -> 3' yönünde girin (A, T, G, C harflerini kullanın)</div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="productLength" class="form-label">Ürün Uzunluğu (bç)</label>
+                                    <input type="number" class="form-control" id="productLength" name="productLength" placeholder="örn: 500">
+                                    <div class="form-text">Amplifikasyon ürününün istenen uzunluğu (opsiyonel)</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="button" class="btn btn-outline-secondary me-md-2" id="clearDesignBtn">
+                                <i class="fas fa-eraser me-2"></i>Temizle
+                            </button>
+                            <button type="button" class="btn btn-primary" id="designBtn">
+                                <i class="fas fa-magic me-2"></i>Primer Tasarla
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Tasarım Sonuçları -->
+                <div class="primer-result" id="designResult">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>Tasarım sonuçları burada görüntülenecek
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Primer Tasarım İpuçları -->
+    <div class="primer-section primer-tips">
+        <h3 class="section-title">Primer Tasarım İpuçları</h3>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="tip-item">
+                    <h5><i class="fas fa-check-circle me-2 text-success"></i>İdeal Primer Özellikleri</h5>
+                    <ul>
+                        <li>Uzunluk: 18-30 baz çifti</li>
+                        <li>GC içeriği: %40-60</li>
+                        <li>Erime sıcaklığı (Tm): 50-65°C</li>
+                        <li>Primer çiftleri arasındaki Tm farkı ≤ 5°C olmalı</li>
+                        <li>3' ucunda G veya C bulunması tercih edilir (GC clamp)</li>
+                    </ul>
+                </div>
+                
+                <div class="tip-item">
+                    <h5><i class="fas fa-exclamation-triangle me-2 text-warning"></i>Kaçınılması Gerekenler</h5>
+                    <ul>
+                        <li>Primer-dimer oluşumları</li>
+                        <li>İkincil yapılar (hairpin)</li>
+                        <li>Homopolimer dizileri (AAAA, GGGG, vb.)</li>
+                        <li>Yüksek GC oranı (>%60)</li>
+                        <li>3' ucunda yüksek stabilite</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="tip-item">
+                    <h5><i class="fas fa-info-circle me-2 text-primary"></i>GC İçeriği ve Tm İlişkisi</h5>
+                    <p>Yüksek GC içeriği daha yüksek erime sıcaklığı sağlar. GC bağları AT bağlarından daha güçlüdür ve ayrılmaları için daha yüksek enerji gerektirir.</p>
+                </div>
+                
+                <div class="tip-item">
+                    <h5><i class="fas fa-flask me-2 text-danger"></i>Primer Spesifikliği</h5>
+                    <p>Özgün bir PCR ürünü elde etmek için, primerlerinizin yalnızca hedef diziye bağlanması önemlidir. Primerleriniz genomun diğer bölgelerine bağlanmamalıdır.</p>
+                </div>
+                
+                <div class="tip-item">
+                    <h5><i class="fas fa-magic me-2 text-success"></i>Tasarım İpucu</h5>
+                    <p>Primerlerinizi tasarlarken, amplikon uzunluğunu PCR'ın amacına göre optimize edin. Standart PCR için 500-1500 bç, qPCR için 80-150 bç idealdir.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form butonları
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const clearAnalyzeBtn = document.getElementById('clearAnalyzeBtn');
+        const designBtn = document.getElementById('designBtn');
+        const clearDesignBtn = document.getElementById('clearDesignBtn');
+        
+        // Sonuç alanları
+        const analyzeResult = document.getElementById('analyzeResult');
+        const designResult = document.getElementById('designResult');
+        
+        // Analiz butonu işlevi
+        analyzeBtn.addEventListener('click', function() {
+            const forwardPrimer = document.getElementById('forwardPrimer').value.trim();
+            const reversePrimer = document.getElementById('reversePrimer').value.trim();
+            
+            if (!forwardPrimer && !reversePrimer) {
+                alert('Lütfen en az bir primer dizisi girin.');
+                return;
+            }
+            
+            // Primer analiz isteği
+            fetch('/primer/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    forward_primer: forwardPrimer,
+                    reverse_primer: reversePrimer
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayAnalysisResults(data);
+            })
+            .catch((error) => {
+                console.error('Hata:', error);
+                analyzeResult.style.display = 'block';
+                analyzeResult.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>Analiz sırasında bir hata oluştu: ${error}
+                    </div>
+                `;
+            });
+        });
+        
+        // Tasarım butonu işlevi
+        designBtn.addEventListener('click', function() {
+            const templateSequence = document.getElementById('templateSequence').value.trim();
+            const productLength = document.getElementById('productLength').value.trim();
+            
+            if (!templateSequence) {
+                alert('Lütfen hedef DNA dizisini girin.');
+                return;
+            }
+            
+            // Primer tasarım isteği
+            fetch('/primer/design', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    template_sequence: templateSequence,
+                    target_length: productLength ? parseInt(productLength) : null
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayDesignResults(data);
+            })
+            .catch((error) => {
+                console.error('Hata:', error);
+                designResult.style.display = 'block';
+                designResult.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>Tasarım sırasında bir hata oluştu: ${error}
+                    </div>
+                `;
+            });
+        });
+        
+        // Temizleme butonları
+        clearAnalyzeBtn.addEventListener('click', function() {
+            document.getElementById('forwardPrimer').value = '';
+            document.getElementById('reversePrimer').value = '';
+            analyzeResult.style.display = 'none';
+        });
+        
+        clearDesignBtn.addEventListener('click', function() {
+            document.getElementById('templateSequence').value = '';
+            document.getElementById('productLength').value = '';
+            designResult.style.display = 'none';
+        });
+        
+        // Analiz sonuçları gösterimi
+        function displayAnalysisResults(data) {
+            analyzeResult.style.display = 'block';
+            
+            if (data.error) {
+                analyzeResult.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>${data.error}
+                    </div>
+                `;
+                return;
+            }
+            
+            const forwardPrimer = document.getElementById('forwardPrimer').value.trim();
+            const reversePrimer = document.getElementById('reversePrimer').value.trim();
+            
+            let resultHtml = '';
+            
+            // İki primer de girilmişse
+            if (forwardPrimer && reversePrimer) {
+                const pairScore = data.pair_score;
+                let scoreClass = pairScore >= 80 ? 'high-score' : (pairScore >= 60 ? 'medium-score' : 'low-score');
+                
+                resultHtml = `
+                    <h4 class="mb-4">Primer Çifti Analiz Sonuçları</h4>
+                    <div class="row align-items-center mb-4">
+                        <div class="col-md-8">
+                            <h5>Genel Uyumluluk Skoru:</h5>
+                            <p>Primer çiftinizin genel uyumluluk değerlendirmesi</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <span class="score-badge ${scoreClass}">${pairScore}/100</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Çift Değerlendirmesi</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="result-property">
+                                <div class="property-name">Tm Farkı:</div>
+                                <div class="property-value ${data.tm_difference.compatible ? 'ideal' : 'error'}">${data.tm_difference.message}</div>
+                            </div>
+                            <div class="result-property">
+                                <div class="property-name">Primer-Dimer Riski:</div>
+                                <div class="property-value ${data.primer_dimer.risk < 0.3 ? 'ideal' : (data.primer_dimer.risk < 0.7 ? 'warning' : 'error')}">${data.primer_dimer.message}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">İleri (Forward) Primer</h5>
+                                </div>
+                                <div class="card-body">
+                                    ${getPrimerPropertyHtml(data.forward_primer)}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header bg-success text-white">
+                                    <h5 class="mb-0">Geri (Reverse) Primer</h5>
+                                </div>
+                                <div class="card-body">
+                                    ${getPrimerPropertyHtml(data.reverse_primer)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            // Sadece bir primer girilmişse
+            else {
+                const primer = forwardPrimer ? forwardPrimer : reversePrimer;
+                const primerData = data.primer;
+                const primerScore = primerData.score;
+                let scoreClass = primerScore >= 80 ? 'high-score' : (primerScore >= 60 ? 'medium-score' : 'low-score');
+                
+                resultHtml = `
+                    <h4 class="mb-4">Primer Analiz Sonuçları</h4>
+                    <div class="row align-items-center mb-4">
+                        <div class="col-md-8">
+                            <h5>Primer Kalite Skoru:</h5>
+                            <p>Primerinizin genel kalite değerlendirmesi</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <span class="score-badge ${scoreClass}">${primerScore}/100</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header ${forwardPrimer ? 'bg-primary' : 'bg-success'} text-white">
+                            <h5 class="mb-0">${forwardPrimer ? 'İleri (Forward)' : 'Geri (Reverse)'} Primer</h5>
+                        </div>
+                        <div class="card-body">
+                            ${getPrimerPropertyHtml(primerData)}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            analyzeResult.innerHTML = resultHtml;
+        }
+        
+        // Primer özellik HTML'i oluştur
+        function getPrimerPropertyHtml(primerData) {
+            return `
+                <div class="result-property">
+                    <div class="property-name">Uzunluk:</div>
+                    <div class="property-value ${primerData.length.ideal ? 'ideal' : 'error'}">${primerData.length.message}</div>
+                </div>
+                <div class="result-property">
+                    <div class="property-name">GC İçeriği:</div>
+                    <div class="property-value ${primerData.gc_content.ideal ? 'ideal' : 'error'}">${primerData.gc_content.message}</div>
+                </div>
+                <div class="result-property">
+                    <div class="property-name">Erime Sıcaklığı (Tm):</div>
+                    <div class="property-value ${primerData.tm.ideal ? 'ideal' : 'error'}">${primerData.tm.message}</div>
+                </div>
+                <div class="result-property">
+                    <div class="property-name">İkincil Yapı:</div>
+                    <div class="property-value ${primerData.secondary_structure.risk < 0.3 ? 'ideal' : (primerData.secondary_structure.risk < 0.7 ? 'warning' : 'error')}">${primerData.secondary_structure.message}</div>
+                </div>
+                <div class="result-property">
+                    <div class="property-name">Kendi Kendine Dimer:</div>
+                    <div class="property-value ${primerData.primer_dimer.risk < 0.3 ? 'ideal' : (primerData.primer_dimer.risk < 0.7 ? 'warning' : 'error')}">${primerData.primer_dimer.message}</div>
+                </div>
+                <div class="result-property">
+                    <div class="property-name">GC-clamp:</div>
+                    <div class="property-value ${primerData.gc_clamp.present ? 'ideal' : 'warning'}">${primerData.gc_clamp.message}</div>
+                </div>
+                <div class="result-property">
+                    <div class="property-name">Homopolimer:</div>
+                    <div class="property-value ${!primerData.homopolymer.present ? 'ideal' : 'error'}">${primerData.homopolymer.message}</div>
+                </div>
+            `;
+        }
+        
+        // Tasarım sonuçları gösterimi
+        function displayDesignResults(data) {
+            designResult.style.display = 'block';
+            
+            if (!data.success) {
+                designResult.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>${data.error}
+                    </div>
+                `;
+                return;
+            }
+            
+            const primers = data.primers;
+            const pairScore = primers.evaluation.pair_score;
+            let scoreClass = pairScore >= 80 ? 'high-score' : (pairScore >= 60 ? 'medium-score' : 'low-score');
+            
+            let resultHtml = `
+                <h4 class="mb-4">Primer Tasarım Sonuçları</h4>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i>Uygun primer çifti tasarlandı
+                </div>
+                
+                <div class="row align-items-center mb-4">
+                    <div class="col-md-8">
+                        <h5>Genel Uyumluluk Skoru:</h5>
+                        <p>Tasarlanan primer çiftinin genel kalite değerlendirmesi</p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <span class="score-badge ${scoreClass}">${pairScore}/100</span>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">İleri (Forward) Primer</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="fw-bold">Dizi (5' → 3'):</label>
+                                    <div class="p-2 bg-light rounded">${primers.forward}</div>
+                                </div>
+                                ${getPrimerPropertyHtml(primers.evaluation.forward_primer)}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">Geri (Reverse) Primer</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="fw-bold">Dizi (5' → 3'):</label>
+                                    <div class="p-2 bg-light rounded">${primers.reverse}</div>
+                                </div>
+                                ${getPrimerPropertyHtml(primers.evaluation.reverse_primer)}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">PCR Ürünü Bilgileri</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="result-property">
+                                    <div class="property-name">Ürün Uzunluğu:</div>
+                                    <div class="property-value">${primers.product_length} baz çifti</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="result-property">
+                                    <div class="property-name">Tm Farkı:</div>
+                                    <div class="property-value ${primers.evaluation.tm_difference.compatible ? 'ideal' : 'error'}">${primers.evaluation.tm_difference.message}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-property">
+                            <div class="property-name">Primer-Dimer Riski:</div>
+                            <div class="property-value ${primers.evaluation.primer_dimer.risk < 0.3 ? 'ideal' : (primers.evaluation.primer_dimer.risk < 0.7 ? 'warning' : 'error')}">${primers.evaluation.primer_dimer.message}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            designResult.innerHTML = resultHtml;
+        }
+    });
+</script>
+{% endblock %} 

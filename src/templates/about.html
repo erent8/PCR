@@ -1,0 +1,474 @@
+{% extends "base.html" %}
+
+{% block title %}PCR Optimizer - Hakkında{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Soft tasarım için özel stiller */
+    .about-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem 0;
+    }
+
+    .about-header {
+        text-align: center;
+        padding-bottom: 1.5rem;
+        border-bottom: none;
+        margin-bottom: 2rem;
+    }
+    
+    .about-title {
+        font-weight: 500;
+        color: #3498db;
+        margin-bottom: 1rem;
+    }
+    
+    .about-section {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .about-section-title {
+        color: #3498db;
+        font-weight: 500;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .about-feature-box {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 1.2rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid #3498db;
+    }
+    
+    .formula-box {
+        padding: 1rem;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        font-family: 'Courier New', monospace;
+        text-align: center;
+    }
+    
+    .formula-description {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-top: 0.5rem;
+    }
+    
+    .tip-box {
+        background-color: #e8f4fd;
+        border-radius: 10px;
+        padding: 1rem;
+        margin: 1rem 0;
+        border-left: 4px solid #3498db;
+    }
+    
+    .tip-title {
+        color: #3498db;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    
+    .call-to-action {
+        text-align: center;
+        margin: 2rem 0;
+    }
+    
+    .feature-list {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    
+    .feature-list li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        align-items: center;
+    }
+    
+    .feature-list li:last-child {
+        border-bottom: none;
+    }
+    
+    .feature-list li i {
+        color: #3498db;
+        margin-right: 0.75rem;
+    }
+    
+    .pcr-tips {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .tip-card {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 1.2rem;
+        height: 100%;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+    }
+    
+    .tip-card h5 {
+        color: #3498db;
+        margin-bottom: 1rem;
+        font-weight: 500;
+    }
+    
+    .tip-card ul {
+        padding-left: 1.2rem;
+    }
+    
+    .tip-card li {
+        margin-bottom: 0.5rem;
+        line-height: 1.5;
+    }
+    
+    .dna-animation-container {
+        position: relative;
+        width: 100%;
+        height: 150px;
+        overflow: hidden;
+        background-color: #f8f9fa;
+        border-radius: 15px;
+        margin-top: 30px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+    }
+    
+    .dna-strand {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+    }
+    
+    .dna-base {
+        position: absolute;
+        width: 12px;
+        height: 4px;
+        border-radius: 2px;
+    }
+    
+    .dna-base-1 {
+        background-color: #3498db;
+    }
+    
+    .dna-base-2 {
+        background-color: #e74c3c;
+    }
+    
+    .dna-connector {
+        position: absolute;
+        width: 30px;
+        height: 1.5px;
+        background-color: #2ecc71;
+    }
+    
+    .faq-accordion .accordion-button:not(.collapsed) {
+        background-color: #e8f4fd;
+        color: #3498db;
+        box-shadow: none;
+    }
+    
+    .faq-accordion .accordion-button:focus {
+        box-shadow: none;
+        border-color: #e8f4fd;
+    }
+    
+    .faq-accordion .accordion-body {
+        background-color: #f8f9fa;
+    }
+    
+    .formula-symbol {
+        font-family: 'Courier New', monospace;
+        background-color: #f8f9fa;
+        padding: 0.1rem 0.3rem;
+        border-radius: 3px;
+        color: #e74c3c;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dnaContainer = document.getElementById('dna-animation');
+        if (!dnaContainer) return;
+        
+        const containerWidth = dnaContainer.offsetWidth;
+        const strandCount = 40;
+        const baseWidth = 12;
+        const baseHeight = 4;
+        const connectorWidth = 30;
+        const spacing = containerWidth / strandCount;
+        
+        // Create DNA strands
+        for (let i = 0; i < strandCount; i++) {
+            // Position and animation offset
+            const x = i * spacing + 10;
+            const animOffset = i * 100;
+            const height = 180;
+            
+            // Create base 1
+            const base1 = document.createElement('div');
+            base1.className = 'dna-base dna-base-1';
+            base1.style.left = x + 'px';
+            base1.style.animation = `dnaAnimation1 3s infinite ${animOffset}ms ease-in-out`;
+            dnaContainer.appendChild(base1);
+            
+            // Create base 2
+            const base2 = document.createElement('div');
+            base2.className = 'dna-base dna-base-2';
+            base2.style.left = (x + connectorWidth) + 'px';
+            base2.style.animation = `dnaAnimation2 3s infinite ${animOffset}ms ease-in-out`;
+            dnaContainer.appendChild(base2);
+            
+            // Create connector
+            const connector = document.createElement('div');
+            connector.className = 'dna-connector';
+            connector.style.left = (x + baseWidth/2) + 'px';
+            connector.style.animation = `dnaConnectorAnimation 3s infinite ${animOffset}ms ease-in-out`;
+            dnaContainer.appendChild(connector);
+        }
+        
+        // Add the animations to the stylesheet
+        const styleSheet = document.createElement('style');
+        styleSheet.type = 'text/css';
+        styleSheet.innerHTML = `
+            @keyframes dnaAnimation1 {
+                0%, 100% { top: 10px; }
+                50% { top: 120px; }
+            }
+            
+            @keyframes dnaAnimation2 {
+                0%, 100% { top: 120px; }
+                50% { top: 10px; }
+            }
+            
+            @keyframes dnaConnectorAnimation {
+                0%, 100% {
+                    top: 65px;
+                    transform: rotate(-30deg);
+                }
+                25% {
+                    top: 65px;
+                    transform: rotate(0deg);
+                }
+                50% {
+                    top: 65px;
+                    transform: rotate(30deg);
+                }
+                75% {
+                    top: 65px;
+                    transform: rotate(0deg);
+                }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="about-container">
+    <div class="about-header">
+        <div class="text-center mb-4">
+            <img src="{{ url_for('static', filename='img/dna.svg') }}" alt="DNA" class="img-fluid" style="max-height: 180px;">
+        </div>
+        <h1 class="about-title display-5">PCR Optimizer</h1>
+        <p class="lead text-muted">Moleküler biyoloji çalışmalarınız için akıllı PCR optimizasyon aracı</p>
+    </div>
+    
+    <div class="about-section">
+        <h2 class="about-section-title">Uygulama Hakkında</h2>
+        <p class="lead">
+            PCR Optimizer, moleküler biyoloji ve genetik alanlarında çalışan araştırmacılar, öğrenciler ve laboratuvar teknisyenleri için 
+            geliştirilmiş bir PCR protokolü optimizasyon aracıdır.
+        </p>
+        <p>
+            Bu uygulama, başarılı PCR deneylerini planlamak ve optimize etmek için gerekli hesaplamaları otomatikleştirir, 
+            böylece zamandan tasarruf ederken deney başarı oranınızı artırabilirsiniz.
+        </p>
+        
+        <div class="tip-box">
+            <h5 class="tip-title"><i class="fas fa-lightbulb me-2"></i>Öneri</h5>
+            <p class="mb-0">PCR Optimizer, araştırmanızdaki deney başarısını artırmak ve zaman tasarrufu sağlamak için tasarlanmıştır. 
+            Optimum şartları belirleyerek tekrar çalışma ihtiyacını azaltır.</p>
+        </div>
+    </div>
+    
+    <div class="about-section">
+        <h2 class="about-section-title">Özellikler</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> Primer erime sıcaklığı (Tm) hesaplaması</li>
+                    <li><i class="fas fa-check-circle"></i> GC içeriği analizi</li>
+                    <li><i class="fas fa-check-circle"></i> Optimal bağlanma sıcaklığı hesaplaması</li>
+                    <li><i class="fas fa-check-circle"></i> Uzama süresi optimizasyonu</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <ul class="feature-list">
+                    <li><i class="fas fa-check-circle"></i> Döngü sayısı tavsiyesi</li>
+                    <li><i class="fas fa-check-circle"></i> Tam PCR protokolü oluşturma</li>
+                    <li><i class="fas fa-check-circle"></i> Farklı formatlarda protokol indirme</li>
+                    <li><i class="fas fa-check-circle"></i> Görsel protokol sunumu</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="about-section">
+        <h2 class="about-section-title">Teorik Arka Plan</h2>
+        <p>PCR Optimizer aşağıdaki bilimsel prensiplere ve formüllere dayanır:</p>
+        
+        <div class="about-feature-box">
+            <h5>Erime Sıcaklığı (Tm) Hesaplaması</h5>
+            <div class="formula-box">
+                Tm = 4 × (G + C) + 2 × (A + T)
+            </div>
+            <p class="formula-description">
+                Bu basit formül, kısa DNA parçaları için yaklaşık Tm değerlerini hesaplamak için kullanılır. 
+                Daha karmaşık hesaplamalar için en boy (salt) konsantrasyonu, sekans uzunluğu ve diğer 
+                faktörleri hesaba katan algoritmalar kullanılabilir.
+            </p>
+        </div>
+        
+        <div class="about-feature-box">
+            <h5>GC İçeriği Hesaplaması</h5>
+            <div class="formula-box">
+                GC İçeriği (%) = [(G + C) / (A + T + G + C)] × 100
+            </div>
+            <p class="formula-description">
+                GC içeriği, DNA stabilitesini etkiler ve PCR koşullarının belirlenmesinde önemli bir faktördür. 
+                Yüksek GC içeriği daha yüksek denatürasyon sıcaklıkları gerektirebilir.
+            </p>
+        </div>
+        
+        <div class="about-feature-box">
+            <h5>Bağlanma Sıcaklığı Hesaplaması</h5>
+            <div class="formula-box">
+                Ta = [(Tm<sub>forward</sub> + Tm<sub>reverse</sub>) / 2] - 5°C
+            </div>
+            <p class="formula-description">
+                Bağlanma sıcaklığı (Ta), forward ve reverse primerlerin ortalama Tm değerlerinin 5°C altı olarak 
+                hesaplanır. Bu değer, primerlerden primer dimerlerin oluşmasını önlerken spesifik bağlanmayı 
+                kolaylaştırmak için optimize edilmiştir.
+            </p>
+        </div>
+    </div>
+    
+    <div class="about-section">
+        <h2 class="about-section-title">PCR Optimizasyonu İçin İpuçları</h2>
+        <p>Başarılı PCR reaksiyonları için aşağıdaki ipuçlarını göz önünde bulundurun:</p>
+        
+        <div class="pcr-tips">
+            <div class="tip-card">
+                <h5><i class="fas fa-flask me-2"></i>Primer Tasarımı</h5>
+                <ul>
+                    <li>18-30 baz uzunluğunda primerler kullanın</li>
+                    <li>GC içeriği %40-60 arasında olmalı</li>
+                    <li>3' ucunda 3-5 G/C bazı olan primerler tercih edin</li>
+                    <li>Primer-dimer oluşumundan kaçının</li>
+                    <li>Forward ve reverse primerlerin Tm değerleri birbirine yakın olmalı (2-3°C fark)</li>
+                </ul>
+            </div>
+            
+            <div class="tip-card">
+                <h5><i class="fas fa-sliders-h me-2"></i>Döngü Optimizasyonu</h5>
+                <ul>
+                    <li>Denatürasyon sıcaklığını 95°C olarak tutun (GC-zengin şablonlar için 98°C)</li>
+                    <li>Uzama sıcaklığını polimeraz için optimize edin (genellikle 72°C)</li>
+                    <li>Döngü sayısını aşırı artırmayın (genellikle 25-35 döngü yeterli)</li>
+                    <li>Uzun DNA fragmentleri için uzama süresini artırın</li>
+                    <li>Bir gradyan PCR ile optimal bağlanma sıcaklığını belirleyin</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="about-section">
+        <h2 class="about-section-title">Sık Karşılaşılan Sorunlar</h2>
+        <div class="accordion faq-accordion" id="accordionPCR">
+            <div class="accordion-item">
+                <h4 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                        <i class="fas fa-question-circle me-2"></i>PCR ürünü oluşmaması
+                    </button>
+                </h4>
+                <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionPCR">
+                    <div class="accordion-body">
+                        <ul>
+                            <li>Primer tasarımını kontrol edin</li>
+                            <li>Şablon DNA konsantrasyonunu artırın</li>
+                            <li>Bağlanma sıcaklığını düşürün</li>
+                            <li>MgCl<sub>2</sub> konsantrasyonunu optimize edin</li>
+                            <li>DMSO gibi PCR katkı maddeleri kullanın (özellikle GC-zengin şablonlar için)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h4 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                        <i class="fas fa-question-circle me-2"></i>Spesifik olmayan ürünler
+                    </button>
+                </h4>
+                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionPCR">
+                    <div class="accordion-body">
+                        <ul>
+                            <li>Bağlanma sıcaklığını artırın</li>
+                            <li>Döngü sayısını azaltın</li>
+                            <li>Touch-down PCR protokolü kullanın</li>
+                            <li>Primer spesifikliğini kontrol edin</li>
+                            <li>MgCl<sub>2</sub> konsantrasyonunu azaltın</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h4 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                        <i class="fas fa-question-circle me-2"></i>Düşük verim
+                    </button>
+                </h4>
+                <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionPCR">
+                    <div class="accordion-body">
+                        <ul>
+                            <li>Döngü sayısını artırın</li>
+                            <li>Uzama süresini uzatın</li>
+                            <li>dNTP konsantrasyonunu kontrol edin</li>
+                            <li>Taze enzim kullanın</li>
+                            <li>PCR tamponunu optimize edin</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="call-to-action">
+        <a href="{{ url_for('optimizer_page') }}" class="btn btn-primary btn-lg rounded-pill px-4 py-2">
+            <i class="fas fa-magic me-2"></i>PCR Protokolünü Optimize Et
+        </a>
+    </div>
+    
+    <!-- DNA Animasyonu -->
+    <div class="text-center">
+        <div id="dna-animation" class="dna-animation-container mt-3 mb-4 mx-auto" style="max-width: 600px; height: 150px;">
+            <!-- JavaScript ile DNA sarmalı oluşturulacak -->
+        </div>
+    </div>
+</div>
+{% endblock %} 

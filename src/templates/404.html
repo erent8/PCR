@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Sayfa Bulunamadı - PCR Optimizer{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 offset-lg-2 text-center">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <h1 class="display-1 text-danger mb-3">404</h1>
+                <h2 class="mb-4">Sayfa Bulunamadı</h2>
+                <p class="lead">
+                    Aradığınız sayfa bulunamadı veya taşınmış olabilir.
+                </p>
+                <p>
+                    <i class="fas fa-dna fa-2x text-primary my-3"></i>
+                </p>
+                <p>
+                    DNA amplifiye edebildiğimiz gibi, bu sayfayı amplifiye edemiyoruz.
+                </p>
+                <div class="mt-4">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">
+                        <i class="fas fa-home me-2"></i>Ana Sayfaya Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

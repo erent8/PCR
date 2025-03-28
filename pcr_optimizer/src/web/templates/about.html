@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}PCR Optimizer - Hakkında{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <h1 class="text-center">PCR Optimizer Hakkında</h1>
+        <p class="lead text-center">PCR deneylerinin optimizasyonu için geliştirilmiş bir yazılım aracı.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <i class="fas fa-info-circle"></i> Proje Hakkında
+            </div>
+            <div class="card-body">
+                <h4>PCR Optimizer Nedir?</h4>
+                <p>PCR Optimizer, PCR (Polimeraz Zincir Reaksiyonu) deneylerinin optimizasyonunu kolaylaştırmak için geliştirilmiş bir araçtır. 
+                Bu araç, DNA dizisi veya uzunluğuna göre optimal PCR koşullarını hesaplayarak, araştırmacılara zaman kazandırmayı ve daha tutarlı sonuçlar elde etmeyi amaçlar.</p>
+                
+                <h4 class="mt-4">Özellikler</h4>
+                <ul>
+                    <li><strong>Sıcaklık Döngüsü Optimizasyonu:</strong> Primer özellikleri ve GC içeriğine göre optimal sıcaklık değerlerini hesaplar.</li>
+                    <li><strong>Reaksiyon Süresi Hesaplama:</strong> DNA uzunluğuna göre her adım için gereken süreyi hesaplar.</li>
+                    <li><strong>Protokol Önerisi:</strong> Farklı DNA uzunlukları ve PCR tipleri için özelleştirilmiş protokoller oluşturur.</li>
+                    <li><strong>Rapor Oluşturma:</strong> Optimize edilmiş protokolü farklı formatlarda dışa aktarır.</li>
+                </ul>
+                
+                <h4 class="mt-4">Bilimsel Altyapı</h4>
+                <p>PCR Optimizer, aşağıdaki bilimsel prensipler ve hesaplamalar üzerine kurulmuştur:</p>
+                
+                <ul>
+                    <li><strong>Primer Tm Hesaplaması:</strong> Primer erime sıcaklığı, primer uzunluğu ve kompozisyonuna göre hesaplanır.</li>
+                    <li><strong>GC İçeriği Analizi:</strong> DNA dizisinin GC içeriği, denatürasyon koşullarını belirlemede kullanılır.</li>
+                    <li><strong>Uzama Süresi Hesaplama:</strong> DNA polimerazın sentez hızına göre optimal uzama süresi belirlenir.</li>
+                    <li><strong>Döngü Sayısı Optimizasyonu:</strong> Başlangıç şablon konsantrasyonu ve hedef verime göre gereken döngü sayısı hesaplanır.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <i class="fas fa-code"></i> Teknik Bilgiler
+            </div>
+            <div class="card-body">
+                <h5>Kullanılan Teknolojiler</h5>
+                <ul>
+                    <li>Python 3.8+</li>
+                    <li>Flask Web Framework</li>
+                    <li>NumPy ve Pandas (hesaplamalar için)</li>
+                    <li>Bootstrap 5 (arayüz tasarımı)</li>
+                    <li>ReportLab (PDF rapor oluşturma)</li>
+                </ul>
+                
+                <h5 class="mt-3">Açık Kaynak</h5>
+                <p>PCR Optimizer, açık kaynak bir projedir ve GitHub üzerinden erişilebilir.</p>
+                <a href="https://github.com/username/pcr-optimizer" target="_blank" class="btn btn-outline-primary">
+                    <i class="fab fa-github"></i> GitHub'da Görüntüle
+                </a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <i class="fas fa-question-circle"></i> SSS
+            </div>
+            <div class="card-body">
+                <h6>PCR Optimizer'ı nasıl kullanabilirim?</h6>
+                <p>PCR Optimize Et sayfasına giderek, DNA dizisi veya uzunluğu gibi bilgileri girin ve hesapla düğmesine tıklayın.</p>
+                
+                <h6 class="mt-3">Oluşturulan protokollerin doğruluğu nedir?</h6>
+                <p>Protokoller, bilimsel literatürdeki genel kurallara göre hesaplanır ancak laboratuvar koşullarınıza göre ince ayar gerektirebilir.</p>
+                
+                <h6 class="mt-3">Hesaplanan sonuçları nasıl kaydedebilirim?</h6>
+                <p>Sonuçlar sayfasında bulunan indirme düğmelerini kullanarak TXT, CSV veya JSON formatında kaydedebilirsiniz.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <i class="fas fa-user"></i> İletişim
+            </div>
+            <div class="card-body">
+                <p>PCR Optimizer hakkında sorularınız, önerileriniz veya katkılarınız için iletişime geçebilirsiniz:</p>
+                <ul>
+                    <li><strong>E-posta:</strong> <a href="mailto:contact@pcroptimizer.com">contact@pcroptimizer.com</a></li>
+                    <li><strong>GitHub:</strong> <a href="https://github.com/username/pcr-optimizer/issues" target="_blank">GitHub Issues</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,337 @@
+{% extends 'base.html' %}
+{% block title %}PCR Optimizer - Test Verileri{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-5">PCR Optimizer - Test Verileri</h1>
+    
+    <div class="alert alert-info mb-4">
+        <h4 class="alert-heading">Kullanım Talimatları</h4>
+        <p>Bu sayfada PCR Optimizer uygulamasını test etmek için kullanabileceğiniz örnek veri setleri bulunmaktadır.</p>
+        <p>Her bir veri setinin yanındaki "Kopyala" düğmesine tıklayarak ilgili veriyi panoya kopyalayabilirsiniz. Ardından PCR Optimize Edici formuna yapıştırabilirsiniz.</p>
+        <p>Ya da "Test Et" düğmelerine tıklayarak bu test verilerini doğrudan PCR Optimizer'da test edebilirsiniz.</p>
+    </div>
+
+    <div class="row">
+        <!-- Kısa PCR Protokolü -->
+        <div class="col-md-6">
+            <div class="card test-data-card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Kısa PCR Protokolü</h5>
+                </div>
+                <div class="card-body">
+                    <button class="btn btn-sm btn-outline-primary copy-btn" onclick="copyToClipboard('short-pcr', this)">Kopyala</button>
+                    <span class="success-message">Kopyalandı!</span>
+                    <button class="btn btn-sm btn-primary test-btn" onclick="testProtocol('short')">Test Et</button>
+                    <p>Standart, kısa bir DNA fragmanı için tipik PCR protokolü.</p>
+                    <h6>Veriler:</h6>
+                    <pre id="short-pcr">Forward Primer: ATGCTAGCTAGCTAGCTAGT
+Reverse Primer: TAGCTAGCTAGCTAGCATCG
+Şablon Uzunluğu: 500
+GC İçeriği: 52.3
+Şablon Konsantrasyonu: 10
+Hedef Verim: 100</pre>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Uzun PCR Protokolü -->
+        <div class="col-md-6">
+            <div class="card test-data-card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Uzun PCR Protokolü</h5>
+                </div>
+                <div class="card-body">
+                    <button class="btn btn-sm btn-outline-success copy-btn" onclick="copyToClipboard('long-pcr', this)">Kopyala</button>
+                    <span class="success-message">Kopyalandı!</span>
+                    <button class="btn btn-sm btn-success test-btn" onclick="testProtocol('long')">Test Et</button>
+                    <p>Uzun DNA fragmanları için optimize edilmiş PCR protokolü.</p>
+                    <h6>Veriler:</h6>
+                    <pre id="long-pcr">Forward Primer: GCTACGTAGCTAGCGCTATCGATCG
+Reverse Primer: AGCTGATCGATCGATGGCTACGTAT
+Şablon Uzunluğu: 3500
+GC İçeriği: 45.8
+Şablon Konsantrasyonu: 5
+Hedef Verim: 200</pre>
+                </div>
+            </div>
+        </div>
+        
+        <!-- GC-Zengin PCR Protokolü -->
+        <div class="col-md-6">
+            <div class="card test-data-card">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">GC-Zengin PCR Protokolü</h5>
+                </div>
+                <div class="card-body">
+                    <button class="btn btn-sm btn-outline-danger copy-btn" onclick="copyToClipboard('gc-rich-pcr', this)">Kopyala</button>
+                    <span class="success-message">Kopyalandı!</span>
+                    <button class="btn btn-sm btn-danger test-btn" onclick="testProtocol('gc')">Test Et</button>
+                    <p>Yüksek GC içeriğine sahip DNA fragmanları için optimize edilmiş protokol.</p>
+                    <h6>Veriler:</h6>
+                    <pre id="gc-rich-pcr">Forward Primer: GCGCGGCGCGGCGCTAGCTAG
+Reverse Primer: GCGCGCTAGCTAGCGCGCTAG
+Şablon Uzunluğu: 800
+GC İçeriği: 68.5
+Şablon Konsantrasyonu: 15
+Hedef Verim: 150</pre>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AT-Zengin PCR Protokolü -->
+        <div class="col-md-6">
+            <div class="card test-data-card">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">AT-Zengin PCR Protokolü</h5>
+                </div>
+                <div class="card-body">
+                    <button class="btn btn-sm btn-outline-warning copy-btn" onclick="copyToClipboard('at-rich-pcr', this)">Kopyala</button>
+                    <span class="success-message">Kopyalandı!</span>
+                    <button class="btn btn-sm btn-warning test-btn" onclick="testProtocol('at')">Test Et</button>
+                    <p>Düşük GC içeriğine (yüksek AT içeriğine) sahip DNA fragmanları için optimize edilmiş protokol.</p>
+                    <h6>Veriler:</h6>
+                    <pre id="at-rich-pcr">Forward Primer: ATAATATATATAATATATATAT
+Reverse Primer: TATTATATATATTATATATTA
+Şablon Uzunluğu: 600
+GC İçeriği: 28.6
+Şablon Konsantrasyonu: 12
+Hedef Verim: 120</pre>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tanısal PCR Protokolü -->
+        <div class="col-md-6">
+            <div class="card test-data-card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Tanısal PCR Protokolü</h5>
+                </div>
+                <div class="card-body">
+                    <button class="btn btn-sm btn-outline-info copy-btn" onclick="copyToClipboard('diagnostic-pcr', this)">Kopyala</button>
+                    <span class="success-message">Kopyalandı!</span>
+                    <button class="btn btn-sm btn-info test-btn" onclick="testProtocol('diagnostic')">Test Et</button>
+                    <p>Tanısal amaçlı PCR için optimize edilmiş, daha kısa döngü sayılı protokol.</p>
+                    <h6>Veriler:</h6>
+                    <pre id="diagnostic-pcr">Forward Primer: ACGTACGTACGTACGTACGT
+Reverse Primer: TGCATGCATGCATGCATGCA
+Şablon Uzunluğu: 250
+GC İçeriği: 50.0
+Şablon Konsantrasyonu: 2
+Hedef Verim: 50
+Tanısal PCR: Evet</pre>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Koloni PCR Protokolü -->
+        <div class="col-md-6">
+            <div class="card test-data-card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Koloni PCR Protokolü</h5>
+                </div>
+                <div class="card-body">
+                    <button class="btn btn-sm btn-outline-secondary copy-btn" onclick="copyToClipboard('colony-pcr', this)">Kopyala</button>
+                    <span class="success-message">Kopyalandı!</span>
+                    <button class="btn btn-sm btn-secondary test-btn" onclick="testProtocol('colony')">Test Et</button>
+                    <p>Bakteriyel kolonilerden doğrudan PCR için optimize edilmiş protokol.</p>
+                    <h6>Veriler:</h6>
+                    <pre id="colony-pcr">Forward Primer: TGACTAGCTAGCTAGCTAGC
+Reverse Primer: GCTAGCTAGCTAGCTAGCTA
+Şablon Uzunluğu: 1200
+GC İçeriği: 55.3
+Şablon Konsantrasyonu: 0.5
+Hedef Verim: 20
+Tanısal PCR: Evet</pre>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Minimal Test Verisi -->
+        <div class="col-md-6">
+            <div class="card test-data-card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Minimal Test Verisi</h5>
+                </div>
+                <div class="card-body">
+                    <button class="btn btn-sm btn-outline-dark copy-btn" onclick="copyToClipboard('minimal-test', this)">Kopyala</button>
+                    <span class="success-message">Kopyalandı!</span>
+                    <button class="btn btn-sm btn-dark test-btn" onclick="testProtocol('minimal')">Test Et</button>
+                    <p>Yalnızca temel verileri içeren minimal bir test protokolü.</p>
+                    <h6>Veriler:</h6>
+                    <pre id="minimal-test">Forward Primer: ACGTACGTACGT
+Reverse Primer: TGCATGCATGCA
+Şablon Uzunluğu: 300</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Gizli form -->
+    <form id="testForm" action="{{ url_for('optimizer_page') }}" method="POST" style="display: none;">
+        <input type="text" name="forward_primer" id="test_forward_primer">
+        <input type="text" name="reverse_primer" id="test_reverse_primer">
+        <input type="number" name="template_length" id="test_template_length">
+        <input type="number" step="0.1" name="template_gc" id="test_template_gc">
+        <input type="number" step="0.1" name="template_concentration" id="test_template_concentration">
+        <input type="number" step="0.1" name="target_yield" id="test_target_yield">
+        <input type="checkbox" name="is_diagnostic" id="test_is_diagnostic">
+    </form>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function copyToClipboard(elementId, button) {
+        const element = document.getElementById(elementId);
+        const successMessage = button.nextElementSibling;
+        
+        // Metni seç ve kopyala
+        const text = element.innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            // Başarı mesajını göster
+            successMessage.style.display = "inline";
+            
+            // 2 saniye sonra mesajı gizle
+            setTimeout(() => {
+                successMessage.style.display = "none";
+            }, 2000);
+        });
+    }
+    
+    // Test verileri
+    const testData = {
+        'short': {
+            forward_primer: 'ATGCTAGCTAGCTAGCTAGT',
+            reverse_primer: 'TAGCTAGCTAGCTAGCATCG',
+            template_length: 500,
+            template_gc: 52.3,
+            template_concentration: 10,
+            target_yield: 100,
+            is_diagnostic: false
+        },
+        'long': {
+            forward_primer: 'GCTACGTAGCTAGCGCTATCGATCG',
+            reverse_primer: 'AGCTGATCGATCGATGGCTACGTAT',
+            template_length: 3500,
+            template_gc: 45.8,
+            template_concentration: 5,
+            target_yield: 200,
+            is_diagnostic: false
+        },
+        'gc': {
+            forward_primer: 'GCGCGGCGCGGCGCTAGCTAG',
+            reverse_primer: 'GCGCGCTAGCTAGCGCGCTAG',
+            template_length: 800,
+            template_gc: 68.5,
+            template_concentration: 15,
+            target_yield: 150,
+            is_diagnostic: false
+        },
+        'at': {
+            forward_primer: 'ATAATATATATAATATATATAT',
+            reverse_primer: 'TATTATATATATTATATATTA',
+            template_length: 600,
+            template_gc: 28.6,
+            template_concentration: 12,
+            target_yield: 120,
+            is_diagnostic: false
+        },
+        'diagnostic': {
+            forward_primer: 'ACGTACGTACGTACGTACGT',
+            reverse_primer: 'TGCATGCATGCATGCATGCA',
+            template_length: 250,
+            template_gc: 50.0,
+            template_concentration: 2,
+            target_yield: 50,
+            is_diagnostic: true
+        },
+        'colony': {
+            forward_primer: 'TGACTAGCTAGCTAGCTAGC',
+            reverse_primer: 'GCTAGCTAGCTAGCTAGCTA',
+            template_length: 1200,
+            template_gc: 55.3,
+            template_concentration: 0.5,
+            target_yield: 20,
+            is_diagnostic: true
+        },
+        'minimal': {
+            forward_primer: 'ACGTACGTACGT',
+            reverse_primer: 'TGCATGCATGCA',
+            template_length: 300,
+            template_gc: null,
+            template_concentration: null,
+            target_yield: null,
+            is_diagnostic: false
+        }
+    };
+    
+    function testProtocol(type) {
+        // Form alanlarını doldur
+        const data = testData[type];
+        document.getElementById('test_forward_primer').value = data.forward_primer;
+        document.getElementById('test_reverse_primer').value = data.reverse_primer;
+        document.getElementById('test_template_length').value = data.template_length;
+        
+        // Opsiyonel alanlar
+        if (data.template_gc) {
+            document.getElementById('test_template_gc').value = data.template_gc;
+        } else {
+            document.getElementById('test_template_gc').value = '';
+        }
+        
+        if (data.template_concentration) {
+            document.getElementById('test_template_concentration').value = data.template_concentration;
+        } else {
+            document.getElementById('test_template_concentration').value = '';
+        }
+        
+        if (data.target_yield) {
+            document.getElementById('test_target_yield').value = data.target_yield;
+        } else {
+            document.getElementById('test_target_yield').value = '';
+        }
+        
+        document.getElementById('test_is_diagnostic').checked = data.is_diagnostic;
+        
+        // Formu gönder
+        document.getElementById('testForm').submit();
+    }
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .test-data-card {
+        margin-bottom: 20px;
+        transition: transform 0.3s;
+    }
+    .test-data-card:hover {
+        transform: translateY(-5px);
+    }
+    .copy-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+    .test-btn {
+        position: absolute;
+        top: 10px;
+        right: 80px;
+    }
+    pre {
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .success-message {
+        display: none;
+        position: absolute;
+        top: 10px;
+        right: 60px;
+        color: green;
+        font-weight: bold;
+    }
+</style>
+{% endblock %} 

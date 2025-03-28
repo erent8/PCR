@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <style>
+    .dna-strand {
+      stroke-width: 2;
+      fill: none;
+    }
+    .dna-strand-1 {
+      stroke: #3498db;
+    }
+    .dna-strand-2 {
+      stroke: #e74c3c;
+    }
+    .dna-connection {
+      stroke-width: 1.5;
+    }
+    .dna-connection-1 {
+      stroke: #2ecc71;
+    }
+    .dna-connection-2 {
+      stroke: #f39c12;
+    }
+  </style>
+  
+  <!-- DNA Helix strands -->
+  <path class="dna-strand dna-strand-1" d="M30,10 Q60,30 30,50 Q60,70 30,90 Q60,110 30,130" />
+  <path class="dna-strand dna-strand-2" d="M90,10 Q60,30 90,50 Q60,70 90,90 Q60,110 90,130" />
+  
+  <!-- DNA connections -->
+  <line class="dna-connection dna-connection-1" x1="30" y1="20" x2="90" y2="20" />
+  <line class="dna-connection dna-connection-2" x1="30" y1="30" x2="90" y2="30" />
+  <line class="dna-connection dna-connection-1" x1="30" y1="40" x2="90" y2="40" />
+  <line class="dna-connection dna-connection-2" x1="30" y1="50" x2="90" y2="50" />
+  <line class="dna-connection dna-connection-1" x1="30" y1="60" x2="90" y2="60" />
+  <line class="dna-connection dna-connection-2" x1="30" y1="70" x2="90" y2="70" />
+  <line class="dna-connection dna-connection-1" x1="30" y1="80" x2="90" y2="80" />
+  <line class="dna-connection dna-connection-2" x1="30" y1="90" x2="90" y2="90" />
+  <line class="dna-connection dna-connection-1" x1="30" y1="100" x2="90" y2="100" />
+  <line class="dna-connection dna-connection-2" x1="30" y1="110" x2="90" y2="110" />
+  
+  <!-- DNA base pairs (circles) -->
+  <circle cx="30" cy="20" r="3" fill="#3498db" />
+  <circle cx="90" cy="20" r="3" fill="#e74c3c" />
+  <circle cx="30" cy="30" r="3" fill="#3498db" />
+  <circle cx="90" cy="30" r="3" fill="#e74c3c" />
+  <circle cx="30" cy="40" r="3" fill="#3498db" />
+  <circle cx="90" cy="40" r="3" fill="#e74c3c" />
+  <circle cx="30" cy="50" r="3" fill="#3498db" />
+  <circle cx="90" cy="50" r="3" fill="#e74c3c" />
+  <circle cx="30" cy="60" r="3" fill="#3498db" />
+  <circle cx="90" cy="60" r="3" fill="#e74c3c" />
+  <circle cx="30" cy="70" r="3" fill="#3498db" />
+  <circle cx="90" cy="70" r="3" fill="#e74c3c" />
+  <circle cx="30" cy="80" r="3" fill="#3498db" />
+  <circle cx="90" cy="80" r="3" fill="#e74c3c" />
+  <circle cx="30" cy="90" r="3" fill="#3498db" />
+  <circle cx="90" cy="90" r="3" fill="#e74c3c" />
+  <circle cx="30" cy="100" r="3" fill="#3498db" />
+  <circle cx="90" cy="100" r="3" fill="#e74c3c" />
+  <circle cx="30" cy="110" r="3" fill="#3498db" />
+  <circle cx="90" cy="110" r="3" fill="#e74c3c" />
+</svg> 

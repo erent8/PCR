@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}PCR Eğitimi{% endblock %}
+
+{% block extra_css %}
+<style>
+    .education-container {
+        max-width: 950px;
+        margin: 0 auto;
+        padding: 1.5rem 0;
+    }
+    
+    .education-header {
+        text-align: center;
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .education-title {
+        font-weight: 500;
+        color: #3498db;
+        margin-bottom: 0.8rem;
+    }
+    
+    .education-section {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .section-title {
+        color: #3498db;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 oran */
+        height: 0;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        border-radius: 8px;
+    }
+    
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+    
+    .info-box {
+        background-color: #f8f9fa;
+        border-left: 3px solid #3498db;
+        border-radius: 5px;
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .step-card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1rem;
+        overflow: hidden;
+    }
+    
+    .step-header {
+        padding: 0.8rem 1.2rem;
+        font-weight: 500;
+        color: white;
+    }
+    
+    .denaturation .step-header {
+        background-color: #e74c3c;
+    }
+    
+    .annealing .step-header {
+        background-color: #2ecc71;
+    }
+    
+    .extension .step-header {
+        background-color: #3498db;
+    }
+    
+    .step-body {
+        padding: 1.2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="education-container">
+    <div class="education-header">
+        <h1 class="education-title display-5">PCR Eğitimi</h1>
+        <p class="lead text-muted">PCR tekniğinin temel prensipleri ve kullanımı</p>
+    </div>
+    
+    <!-- Video Bölümü -->
+    <div class="education-section">
+        <h2 class="section-title">PCR Videosu</h2>
+        <p>Aşağıdaki video PCR işlemini detaylı şekilde açıklamaktadır. Bu görsel rehber, PCR'ın nasıl çalıştığını anlamanıza yardımcı olacaktır.</p>
+        
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/wBrNbbAIAFo?start=56" title="PCR (Polymerase Chain Reaction)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
+    
+    <!-- Giriş Bölümü -->
+    <div class="education-section">
+        <h2 class="section-title">PCR Nedir?</h2>
+        <div class="row">
+            <div class="col-md-8">
+                <p>Polimeraz Zincir Reaksiyonu (PCR), hedef bir DNA parçasını çoğaltmak için kullanılan bir teknolojidir. Bu yöntem sayesinde, çok az miktardaki DNA'dan bile milyonlarca kopya üretilebilir.</p>
+                
+                <div class="info-box">
+                    <h5><i class="fas fa-lightbulb me-2"></i>PCR için gerekli ana bileşenler:</h5>
+                    <ul>
+                        <li><strong>DNA Şablonu:</strong> Çoğaltılacak hedef DNA</li>
+                        <li><strong>Primerler:</strong> Kısa DNA parçaları (hedef bölgeyi işaretlerler)</li>
+                        <li><strong>DNA Polimeraz:</strong> Yeni DNA sentezleyen enzim</li>
+                        <li><strong>dNTP'ler:</strong> DNA'nın yapı taşları (A, T, G, C)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <img src="https://cdn.kastatic.org/ka-perseus-images/9c2824330f74c9cc7db44eca9d84745fe6eb4ca7.png" alt="PCR Genel Bakış" class="img-fluid rounded shadow-sm" style="max-width: 100%;">
+                <p class="text-muted mt-2"><small>PCR'ın temel aşamaları</small></p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- PCR Adımları -->
+    <div class="education-section">
+        <h2 class="section-title">PCR Adımları</h2>
+        <p>PCR işlemi, üç ana adımdan oluşan tekrarlayan döngülerle gerçekleşir:</p>
+        
+        <div class="row mt-3">
+            <div class="col-md-4">
+                <div class="step-card denaturation">
+                    <div class="step-header">
+                        <h4 class="mb-0">1. Denatürasyon</h4>
+                    </div>
+                    <div class="step-body">
+                        <p><strong>Sıcaklık:</strong> 94-98°C</p>
+                        <p>Yüksek sıcaklıkta DNA çift sarmalı ayrılır ve tek iplikli hale gelir.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="step-card annealing">
+                    <div class="step-header">
+                        <h4 class="mb-0">2. Bağlanma</h4>
+                    </div>
+                    <div class="step-body">
+                        <p><strong>Sıcaklık:</strong> 50-65°C</p>
+                        <p>Primerler tek iplikli DNA'nın uygun bölgelerine bağlanır.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="step-card extension">
+                    <div class="step-header">
+                        <h4 class="mb-0">3. Uzama</h4>
+                    </div>
+                    <div class="step-body">
+                        <p><strong>Sıcaklık:</strong> 72°C</p>
+                        <p>DNA polimeraz, primerlerden başlayarak yeni DNA zincirleri sentezler.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-box mt-3">
+            <p>Bu döngü tipik olarak 25-35 kez tekrarlanır. Her döngüde, DNA miktarı iki kat artar, böylece önemli miktarda çoğaltma sağlanır.</p>
+            <div class="text-center">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/PCR_steps.svg/500px-PCR_steps.svg.png" alt="PCR Döngüleri" class="img-fluid rounded" style="max-width: 70%;">
+            </div>
+        </div>
+    </div>
+    
+    <!-- PCR Uygulamaları -->
+    <div class="education-section">
+        <h2 class="section-title">PCR Kullanım Alanları</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="info-box">
+                    <h5><i class="fas fa-flask me-2"></i>Bilimsel Araştırmalar</h5>
+                    <ul>
+                        <li>Gen klonlama ve DNA dizileme</li>
+                        <li>Mutasyon analizi</li>
+                        <li>Filogenetik analiz</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-box">
+                    <h5><i class="fas fa-hospital me-2"></i>Tıbbi Uygulamalar</h5>
+                    <ul>
+                        <li>Hastalık tanısı (viral/bakteriyel enfeksiyonlar)</li>
+                        <li>Genetik hastalıkların tespiti</li>
+                        <li>Adli tıp uygulamaları</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- PCR Optimizasyon -->
+    <div class="education-section">
+        <h2 class="section-title">PCR Optimizasyonu Neden Önemli?</h2>
+        <p>PCR'ın başarılı olması için aşağıdaki parametrelerin doğru ayarlanması gerekir:</p>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="info-box">
+                    <h5>Sıcaklık Optimizasyonu</h5>
+                    <ul>
+                        <li>Denatürasyon: Düşük olursa DNA ayrılmaz</li>
+                        <li>Bağlanma: Düşük olursa spesifik olmayan bağlanma, yüksek olursa primer bağlanmaz</li>
+                        <li>Uzama: Polimeraz için ideal olan sıcaklık seçilmelidir</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-box">
+                    <h5>Süre Optimizasyonu</h5>
+                    <ul>
+                        <li>Döngü sayısı: Fazla döngü spesifik olmayan ürünlere yol açabilir</li>
+                        <li>Uzama süresi: Hedef DNA'nın uzunluğuna göre ayarlanmalıdır</li>
+                        <li>GC içeriği: Yüksek GC içeriği daha yüksek sıcaklık gerektirir</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- JavaScript kısmını sadeleştirelim, karmaşık animasyonu kaldırıyoruz -->
+{% endblock %} 

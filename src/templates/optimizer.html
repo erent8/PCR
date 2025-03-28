@@ -1,0 +1,938 @@
+{% extends "base.html" %}
+
+{% block title %}PCR Optimize Edici{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Yumuşak tasarım için özel stiller */
+    .optimizer-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 0;
+    }
+
+    .optimizer-header {
+        text-align: center;
+        padding-bottom: 1.5rem;
+        border-bottom: none;
+        margin-bottom: 2rem;
+    }
+    
+    .optimizer-title {
+        font-weight: 500;
+        color: #3498db;
+        margin-bottom: 1rem;
+    }
+    
+    .optimizer-form {
+        padding: 2rem;
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.2);
+    }
+    
+    .form-label {
+        font-weight: 500;
+        color: #444;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-text {
+        color: #6c757d;
+        font-size: 0.875rem;
+    }
+    
+    .input-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    .protocol-card {
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+    
+    .protocol-header {
+        position: relative;
+        background-color: #3498db;
+        color: white;
+        padding: 1.2rem 1.5rem;
+        font-weight: 500;
+    }
+    
+    .protocol-body {
+        padding: 1.5rem;
+    }
+    
+    .protocol-section {
+        margin-bottom: 2rem;
+    }
+    
+    .protocol-section:last-child {
+        margin-bottom: 0;
+    }
+    
+    .protocol-section-title {
+        font-weight: 500;
+        color: #3498db;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .protocol-step-card {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+    
+    .step-header {
+        padding: 1rem 1.5rem;
+        font-weight: 500;
+        color: white;
+    }
+    
+    .step-body {
+        padding: 1.2rem 1.5rem;
+    }
+    
+    .step-info {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 0.75rem;
+        margin-top: 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .step-detail {
+        margin-bottom: 0.75rem;
+    }
+    
+    .detail-label {
+        font-weight: 500;
+        color: #444;
+        margin-bottom: 0.25rem;
+    }
+    
+    .detail-value {
+        font-weight: 600;
+        color: #3498db;
+    }
+    
+    .initial-denaturation .step-header {
+        background-color: #e74c3c;
+    }
+    
+    .pcr-cycles .step-header {
+        background-color: #3498db;
+    }
+    
+    .denaturation .step-header {
+        background-color: #f39c12;
+    }
+    
+    .annealing .step-header {
+        background-color: #2ecc71;
+    }
+    
+    .extension .step-header {
+        background-color: #9b59b6;
+    }
+    
+    .final-extension .step-header {
+        background-color: #16a085;
+    }
+    
+    .hold .step-header {
+        background-color: #34495e;
+    }
+    
+    .total-time-card {
+        background-color: #f8f9fa;
+        border-radius: 12px;
+        padding: 1.2rem;
+        margin-top: 1.5rem;
+    }
+    
+    .total-time-title {
+        font-weight: 500;
+        color: #3498db;
+        margin-bottom: 0.5rem;
+    }
+    
+    .total-time-value {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    
+    .btn-optimize {
+        background-color: #3498db;
+        border-color: #3498db;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-optimize:hover, .btn-optimize:focus {
+        background-color: #2980b9;
+        border-color: #2980b9;
+        box-shadow: 0 5px 15px rgba(41, 128, 185, 0.3);
+    }
+    
+    .btn-download {
+        background-color: #2ecc71;
+        border-color: #2ecc71;
+        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-download:hover, .btn-download:focus {
+        background-color: #27ae60;
+        border-color: #27ae60;
+        box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+    }
+    
+    .protocol-box {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .temp-marker {
+        width: 60px;
+        text-align: center;
+        font-weight: bold;
+    }
+    
+    .cycle-step {
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+    }
+    
+    .cycle-denaturation {
+        background-color: #fff3cd;
+    }
+    
+    .cycle-annealing {
+        background-color: #d1e7dd;
+    }
+    
+    .cycle-extension {
+        background-color: #cfe2ff;
+    }
+    
+    .initial-denaturation {
+        background-color: #f8d7da;
+    }
+    
+    .final-extension {
+        background-color: #e2d9f3;
+    }
+    
+    .hold {
+        background-color: #d1e7dd;
+    }
+    
+    .protocol-info-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .protocol-info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .protocol-info-card .card-title {
+        color: #3498db;
+        font-weight: 500;
+        margin-bottom: 1rem;
+    }
+    
+    .protocol-tip {
+        background-color: #f8f9fa;
+        border-left: 4px solid #ffc107;
+        border-radius: 8px;
+        padding: 10px 15px;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .pcr-visualization-container {
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        padding: 1.5rem;
+    }
+    
+    .legend-box {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin-right: 5px;
+        border-radius: 3px;
+        vertical-align: middle;
+    }
+    
+    .legend-box.denat {
+        background-color: #e74c3c;
+    }
+    
+    .legend-box.anneal {
+        background-color: #2ecc71;
+    }
+    
+    .legend-box.extend {
+        background-color: #3498db;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="optimizer-container">
+    <div class="optimizer-header">
+        <h1 class="optimizer-title display-5">PCR Protokol Optimize Edici</h1>
+        <p class="lead text-muted">PCR deneyiniz için ideal koşulları ve zamanlamayı hesaplayın</p>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="optimizer-form">
+                {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+                
+                <form method="POST" action="{{ url_for('optimizer_page') }}">
+                    <!-- Şablon Uzunluğu -->
+                    <div class="input-section">
+                        <label for="template_length" class="form-label">Şablon Uzunluğu (baz çifti) <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="template_length" name="template_length" min="100" required placeholder="500">
+                        <div class="form-text">PCR şablonunun uzunluğu (baz çifti cinsinden)</div>
+                    </div>
+                    
+                    <!-- Primerler -->
+                    <div class="input-section">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="forward_primer" class="form-label">Forward Primer</label>
+                                <input type="text" class="form-control" id="forward_primer" name="forward_primer" placeholder="ATGCTAGCATCGATCGTA">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="reverse_primer" class="form-label">Reverse Primer</label>
+                                <input type="text" class="form-control" id="reverse_primer" name="reverse_primer" placeholder="GCTAGCTAGCTAGCATCG">
+                            </div>
+                        </div>
+                        <div class="form-text">Primerler girildiğinde, bağlanma sıcaklığı primer dizilerinden hesaplanacaktır</div>
+                    </div>
+                    
+                    <!-- GC İçeriği -->
+                    <div class="input-section">
+                        <label for="template_gc" class="form-label">Şablon GC İçeriği (%)</label>
+                        <div class="mb-2">
+                            <input type="number" class="form-control" id="template_gc" name="template_gc" min="0" max="100" step="0.1" placeholder="50.0">
+                        </div>
+                        <div class="form-text">Şablonun GC içeriği yüzdesi (yoksa varsayılan değerler kullanılır)</div>
+                    </div>
+                    
+                    <!-- Konsantrasyon ve Verim -->
+                    <div class="input-section">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="template_concentration" class="form-label">Şablon Konsantrasyonu (ng/µl)</label>
+                                <div class="mb-1">
+                                    <input type="number" class="form-control" id="template_concentration" name="template_concentration" min="0" step="0.1" placeholder="10">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="target_yield" class="form-label">Hedef Verim (ng)</label>
+                                <div class="mb-1">
+                                    <input type="number" class="form-control" id="target_yield" name="target_yield" min="0" step="0.1" placeholder="200">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-text mt-2">Bu değerler döngü sayısını optimize etmek için kullanılır</div>
+                    </div>
+                    
+                    <!-- Tanısal PCR -->
+                    <div class="input-section form-check">
+                        <input type="checkbox" class="form-check-input" id="is_diagnostic" name="is_diagnostic">
+                        <label class="form-check-label" for="is_diagnostic">Bu bir tanısal PCR</label>
+                        <div class="form-text">Tanısal PCR için döngü sayısı düşürülür</div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-optimize">
+                            <i class="fas fa-magic me-2"></i>Protokolü Optimize Et
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    {% if protocol %}
+    <div class="row mt-4">
+        <div class="col-lg-10 mx-auto">
+            <div class="protocol-card">
+                <div class="protocol-header">
+                    <h5 class="mb-0"><i class="fas fa-flask me-2"></i>Optimize Edilmiş PCR Protokolü</h5>
+                </div>
+                <div class="protocol-body">
+                    <!-- Girilen veriler -->
+                    <div class="protocol-section">
+                        <h6 class="protocol-section-title">Girilen Parametreler</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="step-detail">
+                                    <div class="detail-label">Şablon Uzunluğu:</div> 
+                                    <div class="detail-value">{{ protocol.template_length }} baz çifti</div>
+                                </div>
+                                
+                                {% if protocol.gc_content %}
+                                <div class="step-detail">
+                                    <div class="detail-label">GC İçeriği:</div> 
+                                    <div class="detail-value">{{ "%.1f"|format(protocol.gc_content) }}%</div>
+                                </div>
+                                {% endif %}
+                                
+                                {% if protocol.is_diagnostic %}
+                                <div class="step-detail">
+                                    <div class="detail-label">Tanısal PCR:</div> 
+                                    <div class="detail-value">Evet</div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                {% if protocol.primers %}
+                                <div class="step-detail">
+                                    <div class="detail-label">Forward Primer:</div> 
+                                    <div class="detail-value text-break">{{ protocol.primers.forward }}</div>
+                                </div>
+                                <div class="step-detail">
+                                    <div class="detail-label">Reverse Primer:</div> 
+                                    <div class="detail-value text-break">{{ protocol.primers.reverse }}</div>
+                                </div>
+                                {% endif %}
+                                
+                                {% if protocol.template_concentration %}
+                                <div class="step-detail">
+                                    <div class="detail-label">Şablon Konsantrasyonu:</div> 
+                                    <div class="detail-value">{{ protocol.template_concentration }} ng/µl</div>
+                                </div>
+                                {% endif %}
+                                
+                                {% if protocol.target_yield %}
+                                <div class="step-detail">
+                                    <div class="detail-label">Hedef Verim:</div> 
+                                    <div class="detail-value">{{ protocol.target_yield }} ng</div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Protokol sonuçları -->
+                    <div class="protocol-section">
+                        <h6 class="protocol-section-title">Optimize Edilmiş Protokol</h6>
+                        
+                        <!-- Başlangıç Denatürasyonu -->
+                        <div class="protocol-step-card initial-denaturation">
+                            <div class="step-header">
+                                <h6 class="mb-0">1. Başlangıç Denatürasyonu <small>(1 kez)</small></h6>
+                            </div>
+                            <div class="step-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="step-detail">
+                                            <div class="detail-label">Sıcaklık:</div> 
+                                            <div class="detail-value">{{ protocol.initial_denaturation.temperature }}°C</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="step-detail">
+                                            <div class="detail-label">Süre:</div> 
+                                            <div class="detail-value">
+                                                {% if protocol.initial_denaturation.time == "indefinite" %}
+                                                    Süresiz
+                                                {% else %}
+                                                    {{ protocol.initial_denaturation.time }} saniye
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="step-info">
+                                    <i class="fas fa-info-circle me-2 text-primary"></i> 
+                                    Başlangıç denatürasyonu, PCR öncesinde DNA şablonunun tam denatürasyonunu sağlamak için uzun bir süre uygulanır. 
+                                    {% if protocol.gc_content and protocol.gc_content > 60 %}
+                                    Yüksek GC içeriği ({{ "%.1f"|format(protocol.gc_content) }}%) nedeniyle daha yüksek bir sıcaklık ve uzun süre uygulanmıştır.
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- PCR Döngüleri -->
+                        <div class="protocol-step-card pcr-cycles">
+                            <div class="step-header">
+                                <h6 class="mb-0">2. PCR Döngüleri <small>({{ protocol.cycles.count }} kez)</small></h6>
+                            </div>
+                            <div class="step-body">
+                                <!-- Denatürasyon -->
+                                <div class="cycle-step cycle-denaturation mb-4">
+                                    <h6 class="text-warning mb-3">2.1. Denatürasyon</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="step-detail">
+                                                <div class="detail-label">Sıcaklık:</div> 
+                                                <div class="detail-value">{{ protocol.cycles.denaturation.temperature }}°C</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="step-detail">
+                                                <div class="detail-label">Süre:</div> 
+                                                <div class="detail-value">{{ protocol.cycles.denaturation.time }} saniye</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="step-info">
+                                        <i class="fas fa-info-circle me-2 text-warning"></i> 
+                                        Denatürasyon aşamasında, DNA zincirleri yüksek sıcaklıkta birbirinden ayrılır.
+                                        {% if protocol.gc_content and protocol.gc_content > 60 %}
+                                        Yüksek GC içeriği nedeniyle standart koşullardan daha yüksek bir sıcaklık uygulanması DNA'nın tam ayrılmasını sağlar.
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <!-- Bağlanma -->
+                                <div class="cycle-step cycle-annealing mb-4">
+                                    <h6 class="text-success mb-3">2.2. Bağlanma (Annealing)</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="step-detail">
+                                                <div class="detail-label">Sıcaklık:</div> 
+                                                <div class="detail-value">{{ protocol.cycles.annealing.temperature }}°C</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="step-detail">
+                                                <div class="detail-label">Süre:</div> 
+                                                <div class="detail-value">{{ protocol.cycles.annealing.time }} saniye</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="step-info">
+                                        <i class="fas fa-info-circle me-2 text-success"></i> 
+                                        Bağlanma sıcaklığı, primerlerin özgül olarak hedef DNA'ya bağlanabilmesi için optimize edilmiştir.
+                                        {% if protocol.primers %}
+                                        Bu sıcaklık, primer Tm değerlerinin yaklaşık 5°C altında belirlenmiştir.
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <!-- Uzama -->
+                                <div class="cycle-step cycle-extension">
+                                    <h6 class="text-primary mb-3">2.3. Uzama (Extension)</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="step-detail">
+                                                <div class="detail-label">Sıcaklık:</div> 
+                                                <div class="detail-value">{{ protocol.cycles.extension.temperature }}°C</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="step-detail">
+                                                <div class="detail-label">Süre:</div> 
+                                                <div class="detail-value">{{ protocol.cycles.extension.time }} saniye</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="step-info">
+                                        <i class="fas fa-info-circle me-2 text-primary"></i> 
+                                        Uzama süresi, şablon uzunluğuna ({{ protocol.template_length }} baz çifti) göre hesaplanmıştır. 
+                                        DNA polimeraz genellikle saniyede 30-100 baz ekler ve bir güvenlik payı eklenir.
+                                        {% if protocol.template_length > 3000 %}
+                                        Uzun şablon nedeniyle ek uzama süresi eklenmiştir.
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Son Uzama -->
+                        <div class="protocol-step-card final-extension">
+                            <div class="step-header">
+                                <h6 class="mb-0">3. Son Uzama <small>(1 kez)</small></h6>
+                            </div>
+                            <div class="step-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="step-detail">
+                                            <div class="detail-label">Sıcaklık:</div> 
+                                            <div class="detail-value">{{ protocol.final_extension.temperature }}°C</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="step-detail">
+                                            <div class="detail-label">Süre:</div> 
+                                            <div class="detail-value">{{ protocol.final_extension.time }} saniye</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="step-info">
+                                    <i class="fas fa-info-circle me-2 text-info"></i> 
+                                    Son uzama aşaması, tüm DNA zincirlerinin tam olarak sentezlenmesini sağlar. Bu aşama, eksik kalan DNA sentezlerinin tamamlanması için ek süre verir.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Saklama -->
+                        <div class="protocol-step-card hold">
+                            <div class="step-header">
+                                <h6 class="mb-0">4. Saklama</h6>
+                            </div>
+                            <div class="step-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="step-detail">
+                                            <div class="detail-label">Sıcaklık:</div> 
+                                            <div class="detail-value">{{ protocol.hold.temperature }}°C</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="step-detail">
+                                            <div class="detail-label">Süre:</div> 
+                                            <div class="detail-value">
+                                                {% if protocol.hold.time == "indefinite" %}
+                                                    Süresiz
+                                                {% else %}
+                                                    {{ protocol.hold.time }} saniye
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="step-info">
+                                    <i class="fas fa-info-circle me-2 text-info"></i> 
+                                    Bu aşama, PCR ürünlerini alana kadar ürünleri korumak için tasarlanmıştır.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Toplam Süre Tahmini -->
+                        {% if protocol %}
+                        <div class="total-time-card">
+                            <div class="total-time-title">Tahmini Toplam Süre</div>
+                            {% set total_time = protocol.initial_denaturation.time if protocol.initial_denaturation.time != "indefinite" else 0 %}
+                            {% set total_time = total_time + (protocol.cycles.count * (protocol.cycles.denaturation.time + protocol.cycles.annealing.time + protocol.cycles.extension.time)) %}
+                            {% set total_time = total_time + protocol.final_extension.time %}
+                            
+                            {% set hours = (total_time // 3600) %}
+                            {% set minutes = ((total_time % 3600) // 60) %}
+                            {% set seconds = (total_time % 60) %}
+                            
+                            <div class="total-time-value">
+                                {% if hours > 0 %}{{ hours }} saat {% endif %}
+                                {% if minutes > 0 %}{{ minutes }} dakika {% endif %}
+                                {% if seconds > 0 %}{{ seconds }} saniye{% endif %}
+                                <span class="text-muted fs-6">(Başlangıç ve son aşamalar dahil)</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Protokolü İndir -->
+                    <div class="d-grid gap-2 mt-4">
+                        <button class="btn btn-success btn-download" type="button" onclick="downloadProtocol('text')">
+                            <i class="fas fa-download me-2"></i> Protokolü İndir (TXT)
+                        </button>
+                    </div>
+                    
+                    <!-- PCR Görselleştirme -->
+                    <div class="mt-5">
+                        <h6 class="protocol-section-title">PCR Döngüsü Görselleştirmesi</h6>
+                        <div class="row">
+                            <div class="col-lg-8 mx-auto">
+                                <div class="pcr-visualization-container">
+                                    <canvas id="pcrTemperatureGraph" width="100%" height="300"></canvas>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <div class="d-flex justify-content-center">
+                                        <div class="mx-2"><span class="legend-box denat"></span> Denatürasyon</div>
+                                        <div class="mx-2"><span class="legend-box anneal"></span> Bağlanma</div>
+                                        <div class="mx-2"><span class="legend-box extend"></span> Uzama</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- PCR Bilgilendirme Kartları -->
+                    <div class="mt-5">
+                        <h6 class="protocol-section-title">PCR Protokolünü Anlamak</h6>
+                        <div class="row row-cols-1 row-cols-md-2 g-4">
+                            <div class="col">
+                                <div class="card h-100 protocol-info-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <i class="fas fa-temperature-high me-2 text-danger"></i>
+                                            Denatürasyon
+                                        </h5>
+                                        <p class="card-text">
+                                            Denatürasyon aşamasında ({{ protocol.cycles.denaturation.temperature }}°C), çift sarmal DNA yapısı bozularak iki tek zincir oluşur. Yüksek sıcaklık, hidrojen bağlarını koparır.
+                                        </p>
+                                        <div class="protocol-tip">
+                                            <i class="fas fa-lightbulb me-2"></i>
+                                            <strong>İpucu:</strong> GC içeriği yüksek şablonlar (>60%) için daha uzun denatürasyon süresi gerekebilir.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card h-100 protocol-info-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <i class="fas fa-link me-2 text-success"></i>
+                                            Bağlanma (Annealing)
+                                        </h5>
+                                        <p class="card-text">
+                                            Bağlanma aşamasında ({{ protocol.cycles.annealing.temperature }}°C), primerler tek zincirli DNA'ya bağlanır. Bu sıcaklık genellikle primer Tm değerlerinden 5°C düşüktür.
+                                        </p>
+                                        <div class="protocol-tip">
+                                            <i class="fas fa-lightbulb me-2"></i>
+                                            <strong>İpucu:</strong> Özgüllüğü artırmak için bağlanma sıcaklığını yükseltebilirsiniz.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card h-100 protocol-info-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <i class="fas fa-dna me-2 text-primary"></i>
+                                            Uzama (Extension)
+                                        </h5>
+                                        <p class="card-text">
+                                            Uzama aşamasında ({{ protocol.cycles.extension.temperature }}°C), DNA polimeraz enzimi yeni DNA zincirini sentezler. Süre, şablon uzunluğuna bağlıdır.
+                                        </p>
+                                        <div class="protocol-tip">
+                                            <i class="fas fa-lightbulb me-2"></i>
+                                            <strong>İpucu:</strong> Şablon uzunluğu kb başına yaklaşık 30-60 saniye uzama süresi önerilir.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card h-100 protocol-info-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <i class="fas fa-chart-line me-2 text-warning"></i>
+                                            Döngü Sayısı
+                                        </h5>
+                                        <p class="card-text">
+                                            PCR, DNA'yı her döngüde iki katına çıkarır. {{ protocol.cycles.count }} döngü sonunda teorik olarak 2<sup>{{ protocol.cycles.count }}</sup> kat bir artış elde edilir.
+                                        </p>
+                                        <div class="protocol-tip">
+                                            <i class="fas fa-lightbulb me-2"></i>
+                                            <strong>İpucu:</strong> 35 döngüden fazlası genellikle non-spesifik ürün riskini artırır.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if protocol %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    function downloadProtocol(format) {
+        const protocol = {{ protocol|tojson }};
+        
+        // API'ye gönder
+        fetch("{{ url_for('download_protocol') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                protocol: protocol,
+                format: format
+            }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Protokol indirme hatası');
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            // Indirme bağlantısı oluştur
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `pcr_protocol_${new Date().toISOString().slice(0, 10)}.${format}`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        })
+        .catch(error => {
+            console.error('İndirme hatası:', error);
+            alert('Protokol indirilemedi. Lütfen tekrar deneyin.');
+        });
+    }
+    
+    // PCR Sıcaklık Grafiği
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('pcrTemperatureGraph').getContext('2d');
+        
+        // Protokol değerlerini al
+        const denatTemp = {{ protocol.cycles.denaturation.temperature }};
+        const denatTime = {{ protocol.cycles.denaturation.time }};
+        const annealTemp = {{ protocol.cycles.annealing.temperature }};
+        const annealTime = {{ protocol.cycles.annealing.time }};
+        const extendTemp = {{ protocol.cycles.extension.temperature }};
+        const extendTime = {{ protocol.cycles.extension.time }};
+        
+        // Sıcaklık değerleri ve zaman noktaları
+        const temps = [];
+        const labels = [];
+        
+        // Başlangıç sıcaklığı
+        temps.push(25);
+        labels.push('Başlangıç');
+        
+        // İlk denatürasyon
+        temps.push(denatTemp);
+        labels.push(`Denatürasyon (${denatTime}s)`);
+        
+        // Bağlanma
+        temps.push(annealTemp);
+        labels.push(`Bağlanma (${annealTime}s)`);
+        
+        // Uzama
+        temps.push(extendTemp);
+        labels.push(`Uzama (${extendTime}s)`);
+        
+        // Tekrar denatürasyon (döngü gösterimi için)
+        temps.push(denatTemp);
+        labels.push(`Denatürasyon`);
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Sıcaklık (°C)',
+                    data: temps,
+                    fill: false,
+                    borderColor: function(context) {
+                        const index = context.dataIndex;
+                        if (index === 1 || index === 4) {
+                            return '#e74c3c'; // Denatürasyon
+                        } else if (index === 2) {
+                            return '#2ecc71'; // Bağlanma
+                        } else if (index === 3) {
+                            return '#3498db'; // Uzama
+                        }
+                        return '#777';
+                    },
+                    borderWidth: 3,
+                    pointBackgroundColor: function(context) {
+                        const index = context.dataIndex;
+                        if (index === 1 || index === 4) {
+                            return '#e74c3c';
+                        } else if (index === 2) {
+                            return '#2ecc71';
+                        } else if (index === 3) {
+                            return '#3498db';
+                        }
+                        return '#777';
+                    },
+                    pointRadius: 6,
+                    segment: {
+                        borderColor: function(context) {
+                            const index = context.p1DataIndex;
+                            if (index === 1) {
+                                return '#e74c3c'; // Isınma - Denatürasyon
+                            } else if (index === 2) {
+                                return '#ff9800'; // Denatürasyon - Bağlanma
+                            } else if (index === 3) {
+                                return '#2ecc71'; // Bağlanma - Uzama
+                            } else if (index === 4) {
+                                return '#3498db'; // Uzama - Denatürasyon
+                            }
+                            return '#777';
+                        }
+                    }
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: Math.min(annealTemp - 10, 20),
+                        max: Math.max(denatTemp + 5, 100),
+                        title: {
+                            display: true,
+                            text: 'Sıcaklık (°C)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'PCR Aşamaları'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.formattedValue}°C`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endif %}
+{% endblock %} 
