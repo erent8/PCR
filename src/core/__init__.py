@@ -1,3 +1,0 @@
-"""
-PCR Optimizer core paketi.
-""" 
